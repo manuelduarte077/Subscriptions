@@ -58,6 +58,8 @@ kotlin {
         androidMain.dependencies {
             implementation(compose.preview)
             implementation(libs.androidx.activity.compose)
+
+            implementation(libs.android.driver)
         }
 
         commonMain.dependencies {
@@ -69,10 +71,16 @@ kotlin {
             implementation(compose.components.uiToolingPreview)
             implementation(libs.androidx.lifecycle.viewmodel)
             implementation(libs.androidx.lifecycle.runtime.compose)
+
+            implementation(libs.koin.core)
+            implementation(libs.runtime)
+
+            //Navigation
+            implementation(libs.navigation.compose)
         }
 
         iosMain.dependencies {
-
+            implementation(libs.native.driver)
         }
 
         desktopMain.dependencies {
