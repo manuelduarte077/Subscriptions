@@ -14,7 +14,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -24,15 +23,16 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import dev.donmanuel.monthlybill.app.features.calendar.CalendarScreen
-import dev.donmanuel.monthlybill.app.features.composables.ModalBottomSheetContent
-import dev.donmanuel.monthlybill.app.features.home.HomeScreen
+import dev.donmanuel.monthlybill.app.features.bill.ModalBottomSheetContent
 import dev.donmanuel.monthlybill.app.navigation.tabs.BottomNavigationBarContent
 import dev.donmanuel.monthlybill.app.navigation.tabs.RootScreen
+import dev.donmanuel.monthlybill.app.navigation.tabs.addBillDetailsScreen
+import dev.donmanuel.monthlybill.app.navigation.tabs.addCalendarScreen
+import dev.donmanuel.monthlybill.app.navigation.tabs.addCategoryScreen
+import dev.donmanuel.monthlybill.app.navigation.tabs.addHomeScreen
+import dev.donmanuel.monthlybill.app.navigation.tabs.addSettingsScreen
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -42,7 +42,6 @@ fun RootNavigationGraph(
 ) {
     val scope = rememberCoroutineScope()
 
-
     // Bottom Sheet
     val sheetState = rememberModalBottomSheetState()
     var showBottomSheet by remember { mutableStateOf(false) }
@@ -50,13 +49,6 @@ fun RootNavigationGraph(
     var fabVisible by remember { mutableStateOf(true) }
 
     Scaffold(
-        topBar = {
-            TopAppBar(
-                title = {
-                    Text("Monthly Bill")
-                },
-            )
-        },
         bottomBar = {
             BottomNavigationBarContent(
                 navController = navController,
@@ -88,10 +80,17 @@ fun RootNavigationGraph(
             startDestination = RootScreen.Home.route,
             Modifier.padding(innerPadding)
         ) {
-            addHomeScreen()
-            addCalendarScreen()
+            addHomeScreen(
+                navController = navController,
+            )
+            addCalendarScreen(
+                navController = navController,
+            )
             addCategoryScreen()
             addSettingsScreen()
+            addBillDetailsScreen(
+                navController = navController,
+            )
         }
     }
 
@@ -111,30 +110,5 @@ fun RootNavigationGraph(
                 }
             }
         }
-    }
-}
-
-
-private fun NavGraphBuilder.addHomeScreen(modifier: Modifier = Modifier) {
-    composable(RootScreen.Home.route) {
-        HomeScreen(modifier)
-    }
-}
-
-private fun NavGraphBuilder.addCalendarScreen(modifier: Modifier = Modifier) {
-    composable(RootScreen.Calendar.route) {
-        CalendarScreen(modifier)
-    }
-}
-
-private fun NavGraphBuilder.addCategoryScreen(modifier: Modifier = Modifier) {
-    composable(RootScreen.Category.route) {
-        CalendarScreen(modifier)
-    }
-}
-
-private fun NavGraphBuilder.addSettingsScreen(modifier: Modifier = Modifier) {
-    composable(RootScreen.Settings.route) {
-        CalendarScreen(modifier)
     }
 }

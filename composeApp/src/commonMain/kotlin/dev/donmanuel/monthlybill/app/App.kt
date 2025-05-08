@@ -11,8 +11,6 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 fun App() {
     MaterialTheme {
         val navController = rememberNavController()
-
         RootNavigationGraph(navController = navController)
-
     }
 }
