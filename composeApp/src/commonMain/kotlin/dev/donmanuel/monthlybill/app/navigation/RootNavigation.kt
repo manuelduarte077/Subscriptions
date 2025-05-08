@@ -45,7 +45,6 @@ fun RootNavigationGraph(
     // Bottom Sheet
     val sheetState = rememberModalBottomSheetState()
     var showBottomSheet by remember { mutableStateOf(false) }
-
     var fabVisible by remember { mutableStateOf(true) }
 
     Scaffold(
