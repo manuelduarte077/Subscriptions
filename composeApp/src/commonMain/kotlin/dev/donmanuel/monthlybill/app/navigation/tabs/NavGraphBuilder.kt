@@ -3,10 +3,12 @@ package dev.donmanuel.monthlybill.app.navigation.tabs
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
+import androidx.navigation.NavType
 import androidx.navigation.compose.composable
+import androidx.navigation.navArgument
 import dev.donmanuel.monthlybill.app.features.bill.BillDetailsScreen
 import dev.donmanuel.monthlybill.app.features.calendar.CalendarScreen
-import dev.donmanuel.monthlybill.app.features.categories.CategoryScreen
+import dev.donmanuel.monthlybill.app.features.categories.presentation.ui.CategoryScreen
 import dev.donmanuel.monthlybill.app.features.home.HomeScreen
 import dev.donmanuel.monthlybill.app.features.settings.SettingsScreen
 
@@ -22,9 +24,9 @@ fun NavGraphBuilder.addCalendarScreen(navController: NavController) {
     }
 }
 
-fun NavGraphBuilder.addCategoryScreen(modifier: Modifier = Modifier) {
+fun NavGraphBuilder.addCategoryScreen() {
     composable(RootScreen.Category.route) {
-        CategoryScreen(modifier)
+        CategoryScreen()
     }
 }
 
@@ -38,7 +40,12 @@ fun NavGraphBuilder.addBillDetailsScreen(
     modifier: Modifier = Modifier,
     navController: NavController
 ) {
-    composable(RootScreen.BillDetails.route) {
-        BillDetailsScreen(modifier, navController)
+    composable(
+        route = "${RootScreen.BillDetails.route}/{billId}",
+        arguments = listOf(navArgument("billId") { type = NavType.IntType })
+    ) { backStackEntry ->
+        val billId = backStackEntry.arguments?.getInt("billId") ?: -1
+
+        BillDetailsScreen(modifier, navController) // Pass the billId
     }
 }
