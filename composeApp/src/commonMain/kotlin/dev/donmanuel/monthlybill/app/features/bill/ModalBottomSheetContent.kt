@@ -1,4 +1,4 @@
-package dev.donmanuel.monthlybill.app.features.composables
+package dev.donmanuel.monthlybill.app.features.bill
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth

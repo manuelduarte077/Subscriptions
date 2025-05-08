@@ -9,6 +9,9 @@ plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
+
+    id("app.cash.sqldelight") version "2.0.2"
+    kotlin("plugin.serialization") version "2.0.21"
 }
 
 kotlin {
@@ -129,6 +132,15 @@ compose.desktop {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
             packageName = "dev.donmanuel.monthlybill.app"
             packageVersion = "1.0.0"
+        }
+    }
+}
+
+sqldelight {
+    databases {
+        create("MonthlyBillDatabase") {
+            packageName.set("dev.donmanuel.monthlybill.app")
+            generateAsync.set(true)
         }
     }
 }

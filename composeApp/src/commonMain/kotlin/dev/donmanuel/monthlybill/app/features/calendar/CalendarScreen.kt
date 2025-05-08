@@ -1,19 +1,26 @@
 package dev.donmanuel.monthlybill.app.features.calendar
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 
 @Composable
 fun CalendarScreen(
-    modifier: Modifier = Modifier
+    navController: NavController,
 ) {
-    Column {
+
+    Column(
+        verticalArrangement = Arrangement.Center,
+    ) {
         Text("Calendar")
         Button(
-            onClick = { /*TODO*/ },
+            onClick = {
+                navController.navigate("billDetails")
+            },
         ) {
             Text("Click me!")
         }
