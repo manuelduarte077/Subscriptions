@@ -40,6 +40,8 @@ fun BottomNavigationBarContent(
         val items = listOf(
             RootScreen.Home,
             RootScreen.Calendar,
+            RootScreen.Category,
+            RootScreen.Settings
         )
         var selectedItem by remember { mutableStateOf(0) }
         var currentRoute by remember { mutableStateOf(RootScreen.Home.route) }

@@ -8,4 +8,6 @@ import androidx.compose.ui.graphics.vector.ImageVector
 sealed class RootScreen(var route: String, val icon: ImageVector?, var title: String) {
     data object Home : RootScreen("home", Icons.Rounded.Home, "Home")
     data object Calendar : RootScreen("calendar", Icons.Rounded.CheckCircle, "Calendar")
+    data object Category : RootScreen("category", Icons.Rounded.CheckCircle, "Category")
+    data object Settings : RootScreen("settings", null, "Settings")
 }

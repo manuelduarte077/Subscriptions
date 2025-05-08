@@ -90,6 +90,8 @@ fun RootNavigationGraph(
         ) {
             addHomeScreen()
             addCalendarScreen()
+            addCategoryScreen()
+            addSettingsScreen()
         }
     }
 
@@ -121,6 +123,18 @@ private fun NavGraphBuilder.addHomeScreen(modifier: Modifier = Modifier) {
 
 private fun NavGraphBuilder.addCalendarScreen(modifier: Modifier = Modifier) {
     composable(RootScreen.Calendar.route) {
+        CalendarScreen(modifier)
+    }
+}
+
+private fun NavGraphBuilder.addCategoryScreen(modifier: Modifier = Modifier) {
+    composable(RootScreen.Category.route) {
+        CalendarScreen(modifier)
+    }
+}
+
+private fun NavGraphBuilder.addSettingsScreen(modifier: Modifier = Modifier) {
+    composable(RootScreen.Settings.route) {
         CalendarScreen(modifier)
     }
 }
