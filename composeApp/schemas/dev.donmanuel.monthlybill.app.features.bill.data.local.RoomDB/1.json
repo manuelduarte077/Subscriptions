@@ -2,10 +2,10 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "9b2020176c2819360185ddd25ffdccf0",
+    "identityHash": "400888cda5a90e17fb2971f19b3364c5",
     "entities": [
       {
-        "tableName": "SubscriptionEntity",
+        "tableName": "Subscription",
         "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `name` TEXT NOT NULL, `price` REAL NOT NULL, `currency` TEXT NOT NULL, `billingCycle` TEXT NOT NULL, `category` TEXT NOT NULL, `icon` TEXT, `color` TEXT, `startDate` TEXT NOT NULL, `endDate` TEXT, `isActive` INTEGER NOT NULL, `description` TEXT, `trialPeriodDays` INTEGER, `reminderDaysBefore` INTEGER)",
         "fields": [
           {
@@ -97,7 +97,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '9b2020176c2819360185ddd25ffdccf0')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '400888cda5a90e17fb2971f19b3364c5')"
     ]
   }
 }

@@ -15,6 +15,5 @@ class MonthlyBillApplication : Application() {
             androidContext(this@MonthlyBillApplication)
             modules(androidDatabaseModule, sharedModule)
         }
-
     }
 }
