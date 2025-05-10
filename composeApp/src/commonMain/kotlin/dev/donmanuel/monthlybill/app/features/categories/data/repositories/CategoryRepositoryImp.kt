@@ -1,12 +1,16 @@
 package dev.donmanuel.monthlybill.app.features.categories.data.repositories
 
-import dev.donmanuel.monthlybill.app.features.categories.domain.entities.Subscription
-import dev.donmanuel.monthlybill.app.features.categories.domain.entities.Subscription.SubscriptionCategory
-import dev.donmanuel.monthlybill.app.features.categories.domain.repositories.SubscriptionRepository
+import dev.donmanuel.monthlybill.app.features.categories.domain.entities.Category
+import dev.donmanuel.monthlybill.app.features.categories.domain.entities.Category.SubscriptionCategory
+import dev.donmanuel.monthlybill.app.features.categories.domain.repositories.CategoryRepository
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 
-class SubscriptionRepositoryImpl : SubscriptionRepository {
-    override suspend fun getSubscriptions(): List<Subscription> {
-        return getSubscriptionList()
+class CategoryRepositoryImp : CategoryRepository {
+    override fun getSubscriptions(): Flow<List<Category>?> {
+        return flow {
+            emit(getSubscriptionList())
+        }
     }
 
     fun getSubscriptionIcon(category: SubscriptionCategory): String {
@@ -31,15 +35,14 @@ class SubscriptionRepositoryImpl : SubscriptionRepository {
         }
     }
 
-
     fun getSubscriptionList() = listOf(
 
-        Subscription(
+        Category(
             id = 1,
             name = "Netflix",
             price = 15.99,
             currency = "USD",
-            billingCycle = Subscription.BillingCycle.MONTHLY,
+            billingCycle = Category.BillingCycle.MONTHLY,
             category = SubscriptionCategory.ENTERTAINMENT,
             icon = getSubscriptionIcon(SubscriptionCategory.ENTERTAINMENT),
             color = getSubscriptionColor(SubscriptionCategory.ENTERTAINMENT),
@@ -50,12 +53,12 @@ class SubscriptionRepositoryImpl : SubscriptionRepository {
             trialPeriodDays = 30,
             reminderDaysBefore = 5
         ),
-        Subscription(
+        Category(
             id = 2,
             name = "Slack",
             price = 8.00,
             currency = "USD",
-            billingCycle = Subscription.BillingCycle.MONTHLY,
+            billingCycle = Category.BillingCycle.MONTHLY,
             category = SubscriptionCategory.UTILITIES,
             icon = getSubscriptionIcon(SubscriptionCategory.UTILITIES),
             color = getSubscriptionColor(SubscriptionCategory.UTILITIES),
@@ -66,12 +69,12 @@ class SubscriptionRepositoryImpl : SubscriptionRepository {
             trialPeriodDays = 14,
             reminderDaysBefore = 3
         ),
-        Subscription(
+        Category(
             id = 3,
             name = "Spotify",
             price = 9.99,
             currency = "USD",
-            billingCycle = Subscription.BillingCycle.YEARLY,
+            billingCycle = Category.BillingCycle.YEARLY,
             category = SubscriptionCategory.ENTERTAINMENT,
             icon = getSubscriptionIcon(SubscriptionCategory.ENTERTAINMENT),
             color = getSubscriptionColor(SubscriptionCategory.ENTERTAINMENT),
@@ -82,12 +85,12 @@ class SubscriptionRepositoryImpl : SubscriptionRepository {
             trialPeriodDays = 30,
             reminderDaysBefore = 5,
         ),
-        Subscription(
+        Category(
             id = 4,
             name = "Amazon Prime",
             price = 12.99,
             currency = "USD",
-            billingCycle = Subscription.BillingCycle.MONTHLY,
+            billingCycle = Category.BillingCycle.MONTHLY,
             category = SubscriptionCategory.ENTERTAINMENT,
             icon = getSubscriptionIcon(SubscriptionCategory.ENTERTAINMENT),
             color = getSubscriptionColor(SubscriptionCategory.ENTERTAINMENT),
@@ -98,12 +101,12 @@ class SubscriptionRepositoryImpl : SubscriptionRepository {
             trialPeriodDays = 30,
             reminderDaysBefore = 5
         ),
-        Subscription(
+        Category(
             id = 5,
             name = "Adobe Creative Cloud",
             price = 52.99,
             currency = "USD",
-            billingCycle = Subscription.BillingCycle.MONTHLY,
+            billingCycle = Category.BillingCycle.MONTHLY,
             category = SubscriptionCategory.ENTERTAINMENT,
             icon = getSubscriptionIcon(SubscriptionCategory.ENTERTAINMENT),
             color = getSubscriptionColor(SubscriptionCategory.ENTERTAINMENT),
@@ -114,12 +117,12 @@ class SubscriptionRepositoryImpl : SubscriptionRepository {
             trialPeriodDays = 7,
             reminderDaysBefore = 3
         ),
-        Subscription(
+        Category(
             id = 6,
             name = "Hulu",
             price = 11.99,
             currency = "USD",
-            billingCycle = Subscription.BillingCycle.MONTHLY,
+            billingCycle = Category.BillingCycle.MONTHLY,
             category = SubscriptionCategory.ENTERTAINMENT,
             icon = getSubscriptionIcon(SubscriptionCategory.ENTERTAINMENT),
             color = getSubscriptionColor(SubscriptionCategory.ENTERTAINMENT),
@@ -130,12 +133,12 @@ class SubscriptionRepositoryImpl : SubscriptionRepository {
             trialPeriodDays = 30,
             reminderDaysBefore = 5
         ),
-        Subscription(
+        Category(
             id = 7,
             name = "1Password",
             price = 2.99,
             currency = "USD",
-            billingCycle = Subscription.BillingCycle.MONTHLY,
+            billingCycle = Category.BillingCycle.MONTHLY,
             category = SubscriptionCategory.UTILITIES,
             icon = getSubscriptionIcon(SubscriptionCategory.UTILITIES),
             color = getSubscriptionColor(SubscriptionCategory.UTILITIES),

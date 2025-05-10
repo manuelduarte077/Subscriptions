@@ -1,6 +1,6 @@
 package dev.donmanuel.monthlybill.app.features.categories.domain.entities
 
-data class Subscription(
+data class Category(
     val id: Long = 0,
     val name: String,
     val price: Double,
@@ -41,7 +41,7 @@ data class Subscription(
             description: String? = null,
             trialPeriodDays: Int? = null,
             reminderDaysBefore: Int? = null
-        ) = Subscription(
+        ) = Category(
             id,
             name,
             price,
