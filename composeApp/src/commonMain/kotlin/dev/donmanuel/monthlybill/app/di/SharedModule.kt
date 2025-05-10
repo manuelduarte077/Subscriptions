@@ -1,5 +1,7 @@
 package dev.donmanuel.monthlybill.app.di
 
+import dev.donmanuel.monthlybill.app.features.bill.data.local.CreateDatabase
+import dev.donmanuel.monthlybill.app.features.bill.data.local.RoomDB
 import dev.donmanuel.monthlybill.app.features.bill.data.repository.SubscriptionRepository
 import dev.donmanuel.monthlybill.app.features.bill.domain.usecase.DeleteSubscriptionUseCase
 import dev.donmanuel.monthlybill.app.features.bill.domain.usecase.GetAllSubscriptionsUseCase
@@ -13,6 +15,8 @@ import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
 
 val sharedModule = module {
+    // Database
+    single<RoomDB> { CreateDatabase(get()).getDatabase() }
 
     // ViewModel
     singleOf(::CategoriesViewModel)
@@ -30,5 +34,4 @@ val sharedModule = module {
 
     // Repositories
     singleOf(::SubscriptionRepository)
-
 }
