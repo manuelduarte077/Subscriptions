@@ -1,4 +1,4 @@
-package dev.donmanuel.monthlybill.app.features.bill
+package dev.donmanuel.monthlybill.app.features.bill.presentation
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -23,7 +23,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BillDetailsScreen(
@@ -33,14 +32,14 @@ fun BillDetailsScreen(
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState())
 
     Scaffold(
-        modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
+        modifier = Modifier.Companion.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
             TopAppBar(
                 title = {
                     Text(
                         text = "Bill Details",
                         style = MaterialTheme.typography.titleLarge,
-                        textAlign = TextAlign.Center,
+                        textAlign = TextAlign.Companion.Center,
                     )
                 },
                 navigationIcon = {
@@ -76,11 +75,10 @@ fun BillDetailsScreen(
                             .fillMaxWidth()
                             .padding(16.dp),
                         style = MaterialTheme.typography.titleMedium,
-                        textAlign = TextAlign.Center,
+                        textAlign = TextAlign.Companion.Center,
                     )
                 }
             }
         }
     }
 }
-
