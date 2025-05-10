@@ -26,7 +26,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
-import dev.donmanuel.monthlybill.app.features.bill.ModalBottomSheetContent
+import dev.donmanuel.monthlybill.app.features.bill.presentation.ModalBottomSheetContent
 import dev.donmanuel.monthlybill.app.navigation.tabs.BottomNavigationBarContent
 import dev.donmanuel.monthlybill.app.navigation.tabs.RootScreen
 import dev.donmanuel.monthlybill.app.navigation.tabs.addBillDetailsScreen

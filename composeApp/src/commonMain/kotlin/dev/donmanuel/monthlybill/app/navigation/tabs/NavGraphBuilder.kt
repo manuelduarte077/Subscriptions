@@ -6,7 +6,7 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
-import dev.donmanuel.monthlybill.app.features.bill.BillDetailsScreen
+import dev.donmanuel.monthlybill.app.features.bill.presentation.BillDetailsScreen
 import dev.donmanuel.monthlybill.app.features.calendar.CalendarScreen
 import dev.donmanuel.monthlybill.app.features.categories.presentation.ui.CategoryScreen
 import dev.donmanuel.monthlybill.app.features.home.HomeScreen
