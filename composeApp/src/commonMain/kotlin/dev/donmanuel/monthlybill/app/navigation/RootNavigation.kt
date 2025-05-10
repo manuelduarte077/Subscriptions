@@ -11,6 +11,7 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -38,7 +39,8 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RootNavigationGraph(
-    navController: NavHostController
+    navController: NavHostController,
+    modifier: Modifier = Modifier,
 ) {
     val scope = rememberCoroutineScope()
 
@@ -48,6 +50,7 @@ fun RootNavigationGraph(
     var fabVisible by remember { mutableStateOf(true) }
 
     Scaffold(
+        modifier = modifier,
         bottomBar = {
             BottomNavigationBarContent(
                 navController = navController,
@@ -69,7 +72,10 @@ fun RootNavigationGraph(
                 ) {
                     Icon(Icons.Default.Add, contentDescription = "Add")
                     Spacer(modifier = Modifier.size(8.dp))
-                    Text("Create")
+                    Text(
+                        "Create",
+                        fontSize = MaterialTheme.typography.titleMedium.fontSize,
+                    )
                 }
             }
         }

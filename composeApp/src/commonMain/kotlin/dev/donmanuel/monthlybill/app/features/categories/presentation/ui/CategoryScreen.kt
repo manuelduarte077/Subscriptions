@@ -49,7 +49,7 @@ fun SubscriptionItem(subscription: Subscription) {
                 .padding(16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            if (subscription.icon != null && subscription.icon is Int) {
+            if (subscription.icon != null && false) {
                 Icon(
                     imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                     contentDescription = "Back",
