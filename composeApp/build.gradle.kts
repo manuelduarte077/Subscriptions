@@ -1,8 +1,6 @@
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
-import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
-import org.jetbrains.kotlin.gradle.targets.js.webpack.KotlinWebpackConfig
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
@@ -10,8 +8,8 @@ plugins {
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
 
-    id("app.cash.sqldelight") version "2.0.2"
-    kotlin("plugin.serialization") version "2.0.21"
+    alias(libs.plugins.room)
+    alias(libs.plugins.ksp)
 }
 
 kotlin {
@@ -35,26 +33,6 @@ kotlin {
 
     jvm("desktop")
 
-    @OptIn(ExperimentalWasmDsl::class)
-    wasmJs {
-        moduleName = "composeApp"
-        browser {
-            val rootDirPath = project.rootDir.path
-            val projectDirPath = project.projectDir.path
-            commonWebpackConfig {
-                outputFileName = "composeApp.js"
-                devServer = (devServer ?: KotlinWebpackConfig.DevServer()).apply {
-                    static = (static ?: mutableListOf()).apply {
-                        // Serve sources to debug inside browser
-                        add(rootDirPath)
-                        add(projectDirPath)
-                    }
-                }
-            }
-        }
-        binaries.executable()
-    }
-
     sourceSets {
         val desktopMain by getting
 
@@ -62,9 +40,11 @@ kotlin {
             implementation(compose.preview)
             implementation(libs.androidx.activity.compose)
 
-            implementation(libs.android.driver)
-        }
+            // Koin
+            implementation(libs.koin.android)
+            implementation(libs.koin.androidx.compose)
 
+        }
         commonMain.dependencies {
             implementation(compose.runtime)
             implementation(compose.foundation)
@@ -75,17 +55,17 @@ kotlin {
             implementation(libs.androidx.lifecycle.viewmodel)
             implementation(libs.androidx.lifecycle.runtime.compose)
 
-            implementation(libs.koin.core)
-            implementation(libs.runtime)
-
             //Navigation
             implementation(libs.navigation.compose)
-        }
+            // Koin
+            implementation(libs.koin.core)
+            implementation(libs.koin.compose)
+            implementation(libs.koin.compose.viewmodel)
+            // Room
+            implementation(libs.room.runtime)
+            implementation(libs.sqlite.bundled)
 
-        iosMain.dependencies {
-            implementation(libs.native.driver)
         }
-
         desktopMain.dependencies {
             implementation(compose.desktop.currentOs)
             implementation(libs.kotlinx.coroutines.swing)
@@ -122,6 +102,12 @@ android {
 
 dependencies {
     debugImplementation(compose.uiTooling)
+
+    add("kspCommonMainMetadata", libs.room.compiler)
+    add("kspAndroid", libs.room.compiler)
+    add("kspIosX64", libs.room.compiler)
+    add("kspIosArm64", libs.room.compiler)
+    add("kspIosSimulatorArm64", libs.room.compiler)
 }
 
 compose.desktop {
@@ -136,11 +122,6 @@ compose.desktop {
     }
 }
 
-sqldelight {
-    databases {
-        create("MonthlyBillDatabase") {
-            packageName.set("dev.donmanuel.monthlybill.app")
-            generateAsync.set(true)
-        }
-    }
+room {
+    schemaDirectory("$projectDir/schemas")
 }
