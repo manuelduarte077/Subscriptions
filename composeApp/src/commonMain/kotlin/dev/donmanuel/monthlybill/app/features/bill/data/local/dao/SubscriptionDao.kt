@@ -5,23 +5,23 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Update
-import dev.donmanuel.monthlybill.app.features.bill.data.model.SubscriptionEntity
+import dev.donmanuel.monthlybill.app.features.bill.data.model.Subscription
 import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface SubscriptionDao {
-    @Query("SELECT * FROM subscriptions")
-    fun getAllSubscriptions(): Flow<List<SubscriptionEntity>>
+    @Query("SELECT * FROM subscription")
+    fun getAllSubscriptions(): Flow<List<Subscription>>
 
-    @Query("SELECT * FROM subscriptions WHERE id = :id")
-    suspend fun getSubscriptionById(id: Long): SubscriptionEntity?
+    @Query("SELECT * FROM subscription WHERE id = :id")
+    suspend fun getSubscriptionById(id: Long): Subscription?
 
     @Insert
-    suspend fun insertSubscription(subscription: SubscriptionEntity)
+    suspend fun insertSubscription(subscription: Subscription)
 
     @Update
-    suspend fun updateSubscription(subscription: SubscriptionEntity)
+    suspend fun updateSubscription(subscription: Subscription)
 
     @Delete
-    suspend fun deleteSubscription(subscription: SubscriptionEntity)
+    suspend fun deleteSubscription(subscription: Subscription)
 }
