@@ -55,6 +55,8 @@ kotlin {
             implementation(libs.androidx.lifecycle.viewmodel)
             implementation(libs.androidx.lifecycle.runtime.compose)
 
+            implementation("androidx.compose.ui:ui-text-google-fonts:1.8.1")
+
             //Navigation
             implementation(libs.navigation.compose)
             // Koin

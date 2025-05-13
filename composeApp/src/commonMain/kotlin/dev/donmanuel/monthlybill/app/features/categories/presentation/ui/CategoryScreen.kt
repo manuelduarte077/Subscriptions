@@ -20,10 +20,15 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -41,15 +46,19 @@ fun CategoryScreen(
     val categories by viewModel.getAllCategories()
         .collectAsStateWithLifecycle(initialValue = emptyList())
 
+    val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState())
+
+
     Scaffold(
-        modifier = modifier,
+        modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
             TopAppBar(
                 title = {
                     Text(
                         text = "Categories",
-                        style = MaterialTheme.typography.titleMedium,
-                        fontSize = 20.sp,
+                        fontSize = 32.sp,
+                        style = MaterialTheme.typography.titleLarge,
+                        fontFamily = MaterialTheme.typography.titleLarge.fontFamily,
                     )
                 },
             )
@@ -95,6 +104,8 @@ fun CategoryItem(category: Category) {
             Spacer(modifier = Modifier.height(12.dp))
             Text(
                 text = category.name,
+                overflow = TextOverflow.Ellipsis,
+                textAlign = TextAlign.Center,
                 style = MaterialTheme.typography.bodyLarge,
                 color = MaterialTheme.colorScheme.onPrimary,
             )
