@@ -43,7 +43,6 @@ fun RootNavigationGraph(
     modifier: Modifier = Modifier,
 ) {
     val scope = rememberCoroutineScope()
-
     // Bottom Sheet
     val sheetState = rememberModalBottomSheetState()
     var showBottomSheet by remember { mutableStateOf(false) }

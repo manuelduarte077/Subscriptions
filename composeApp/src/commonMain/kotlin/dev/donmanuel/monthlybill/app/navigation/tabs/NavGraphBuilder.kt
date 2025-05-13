@@ -46,6 +46,6 @@ fun NavGraphBuilder.addBillDetailsScreen(
     ) { backStackEntry ->
         val billId = backStackEntry.arguments?.getInt("billId") ?: -1
 
-        BillDetailsScreen(modifier, navController) // Pass the billId
+        BillDetailsScreen(modifier, navController)
     }
 }
