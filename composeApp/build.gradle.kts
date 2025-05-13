@@ -43,7 +43,6 @@ kotlin {
             // Koin
             implementation(libs.koin.android)
             implementation(libs.koin.androidx.compose)
-
         }
         commonMain.dependencies {
             implementation(compose.runtime)
@@ -55,8 +54,6 @@ kotlin {
             implementation(libs.androidx.lifecycle.viewmodel)
             implementation(libs.androidx.lifecycle.runtime.compose)
 
-            implementation("androidx.compose.ui:ui-text-google-fonts:1.8.1")
-
             //Navigation
             implementation(libs.navigation.compose)
             // Koin
@@ -66,7 +63,6 @@ kotlin {
             // Room
             implementation(libs.room.runtime)
             implementation(libs.sqlite.bundled)
-
         }
         desktopMain.dependencies {
             implementation(compose.desktop.currentOs)
