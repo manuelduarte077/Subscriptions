@@ -13,25 +13,25 @@ import dev.donmanuel.monthlybill.app.features.home.HomeScreen
 import dev.donmanuel.monthlybill.app.features.settings.SettingsScreen
 
 fun NavGraphBuilder.addHomeScreen(navController: NavController) {
-    composable(RootScreen.Home.route) {
+    composable(BottomNavScreen.Home.route) {
         HomeScreen(navController)
     }
 }
 
 fun NavGraphBuilder.addCalendarScreen(navController: NavController) {
-    composable(RootScreen.Calendar.route) {
+    composable(BottomNavScreen.Calendar.route) {
         CalendarScreen(navController)
     }
 }
 
 fun NavGraphBuilder.addCategoryScreen() {
-    composable(RootScreen.Category.route) {
+    composable(BottomNavScreen.Category.route) {
         CategoryScreen()
     }
 }
 
 fun NavGraphBuilder.addSettingsScreen(modifier: Modifier = Modifier) {
-    composable(RootScreen.Settings.route) {
+    composable(BottomNavScreen.Settings.route) {
         SettingsScreen(modifier)
     }
 }
@@ -41,7 +41,7 @@ fun NavGraphBuilder.addBillDetailsScreen(
     navController: NavController
 ) {
     composable(
-        route = "${RootScreen.BillDetails.route}/{billId}",
+        route = "${AppScreen.BillDetails.route}/{billId}",
         arguments = listOf(navArgument("billId") { type = NavType.IntType })
     ) { backStackEntry ->
         val billId = backStackEntry.arguments?.getInt("billId") ?: -1

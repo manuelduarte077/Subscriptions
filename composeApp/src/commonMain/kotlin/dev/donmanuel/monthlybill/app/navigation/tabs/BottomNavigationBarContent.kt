@@ -12,11 +12,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
+import org.jetbrains.compose.resources.painterResource
 
 @Composable
 fun BottomNavigationBarContent(
     navController: NavController,
-    onItemClicked: (RootScreen) -> Unit,
+    onItemClicked: (BottomNavScreen) -> Unit,
 ) {
     BottomNavigationBarContent { item ->
         navController.navigate(item.route) {
@@ -34,17 +35,17 @@ fun BottomNavigationBarContent(
 
 @Composable
 fun BottomNavigationBarContent(
-    onItemClicked: (RootScreen) -> Unit
+    onItemClicked: (BottomNavScreen) -> Unit
 ) {
     BottomAppBar(modifier = Modifier) {
         val items = listOf(
-            RootScreen.Home,
-            RootScreen.Calendar,
-            RootScreen.Category,
-            RootScreen.Settings
+            BottomNavScreen.Home,
+            BottomNavScreen.Calendar,
+            BottomNavScreen.Category,
+            BottomNavScreen.Settings
         )
         var selectedItem by remember { mutableStateOf(0) }
-        var currentRoute by remember { mutableStateOf(RootScreen.Home.route) }
+        var currentRoute by remember { mutableStateOf(BottomNavScreen.Home.route) }
 
         items.forEachIndexed { index, navigationItem ->
             if (navigationItem.route == currentRoute) {
@@ -56,7 +57,12 @@ fun BottomNavigationBarContent(
             items.forEachIndexed { index, item ->
                 NavigationBarItem(
                     alwaysShowLabel = true,
-                    icon = { Icon(item.icon!!, contentDescription = item.title) },
+                    icon = {
+                        Icon(
+                            painter = painterResource(item.icon),
+                            contentDescription = "${item.title} icon",
+                        )
+                    },
                     label = { Text(item.title) },
                     selected = selectedItem == index,
                     onClick = {

@@ -27,8 +27,8 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import dev.donmanuel.monthlybill.app.features.bill.presentation.ModalBottomSheetContent
+import dev.donmanuel.monthlybill.app.navigation.tabs.BottomNavScreen
 import dev.donmanuel.monthlybill.app.navigation.tabs.BottomNavigationBarContent
-import dev.donmanuel.monthlybill.app.navigation.tabs.RootScreen
 import dev.donmanuel.monthlybill.app.navigation.tabs.addBillDetailsScreen
 import dev.donmanuel.monthlybill.app.navigation.tabs.addCalendarScreen
 import dev.donmanuel.monthlybill.app.navigation.tabs.addCategoryScreen
@@ -54,7 +54,7 @@ fun RootNavigationGraph(
             BottomNavigationBarContent(
                 navController = navController,
             ) { item ->
-                fabVisible = item == RootScreen.Home
+                fabVisible = item == BottomNavScreen.Home
             }
         },
         floatingActionButton = {
@@ -81,7 +81,7 @@ fun RootNavigationGraph(
     ) { innerPadding ->
         NavHost(
             navController = navController,
-            startDestination = RootScreen.Home.route,
+            startDestination = BottomNavScreen.Home.route,
             Modifier.padding(innerPadding)
         ) {
             addHomeScreen(
