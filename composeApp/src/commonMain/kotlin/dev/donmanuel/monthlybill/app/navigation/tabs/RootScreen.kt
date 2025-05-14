@@ -14,7 +14,6 @@ sealed class BottomNavScreen(
     data object Home : BottomNavScreen("home", Res.drawable.home, "Home")
     data object Calendar : BottomNavScreen("calendar", Res.drawable.calendar, "Calendar")
     data object Category : BottomNavScreen("category", Res.drawable.calendar, "Category")
-    data object Settings : BottomNavScreen("settings", Res.drawable.home, "Settings")
 }
 
 sealed class AppScreen(var route: String, var title: String) {

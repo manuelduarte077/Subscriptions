@@ -2,7 +2,6 @@ package dev.donmanuel.monthlybill.app.navigation.tabs
 
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Text
@@ -45,7 +44,6 @@ fun BottomNavigationBarContent(
             BottomNavScreen.Home,
             BottomNavScreen.Calendar,
             BottomNavScreen.Category,
-            BottomNavScreen.Settings
         )
         var selectedItem by remember { mutableStateOf(0) }
         var currentRoute by remember { mutableStateOf(BottomNavScreen.Home.route) }
