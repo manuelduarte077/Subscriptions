@@ -63,11 +63,13 @@ fun HomeScreen(
                         contentDescription = "Settings",
 
                         tint = MaterialTheme.colorScheme.primary,
-                        modifier = Modifier.padding(16.dp)
-                            .size(44.dp)
-                            .clickable {
-                                showBottomSheet = true
-                            }
+                        modifier = Modifier
+                            .size(48.dp) // Expand to meet accessibility standards
+                            .clickable(
+                                onClick = { showBottomSheet = true },
+                                indication = LocalIndication.current, // Add ripple effect
+                                interactionSource = remember { MutableInteractionSource() }
+                            )
                     )
                 },
                 scrollBehavior = scrollBehavior,
