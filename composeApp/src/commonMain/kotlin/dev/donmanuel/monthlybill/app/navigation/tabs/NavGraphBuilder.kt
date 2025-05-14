@@ -10,7 +10,7 @@ import dev.donmanuel.monthlybill.app.features.bill.presentation.BillDetailsScree
 import dev.donmanuel.monthlybill.app.features.calendar.CalendarScreen
 import dev.donmanuel.monthlybill.app.features.categories.presentation.ui.CategoryScreen
 import dev.donmanuel.monthlybill.app.features.home.HomeScreen
-import dev.donmanuel.monthlybill.app.features.settings.SettingsScreen
+import dev.donmanuel.monthlybill.app.features.settings.presentation.SettingsScreen
 
 fun NavGraphBuilder.addHomeScreen(navController: NavController) {
     composable(BottomNavScreen.Home.route) {

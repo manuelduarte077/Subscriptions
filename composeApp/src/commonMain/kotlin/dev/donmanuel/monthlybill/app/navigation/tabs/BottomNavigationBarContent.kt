@@ -2,6 +2,7 @@ package dev.donmanuel.monthlybill.app.navigation.tabs
 
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Text
@@ -12,6 +13,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
+import dev.donmanuel.monthlybill.app.theme.FontSize
+import dev.donmanuel.monthlybill.app.theme.redHatBoldFont
 import org.jetbrains.compose.resources.painterResource
 
 @Composable
@@ -63,7 +66,13 @@ fun BottomNavigationBarContent(
                             contentDescription = "${item.title} icon",
                         )
                     },
-                    label = { Text(item.title) },
+                    label = {
+                        Text(
+                            item.title,
+                            fontFamily = redHatBoldFont(),
+                            fontSize = FontSize.REGULAR,
+                        )
+                    },
                     selected = selectedItem == index,
                     onClick = {
                         selectedItem = index

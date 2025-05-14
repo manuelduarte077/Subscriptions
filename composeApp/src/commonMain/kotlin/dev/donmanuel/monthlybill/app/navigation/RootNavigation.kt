@@ -44,7 +44,9 @@ fun RootNavigationGraph(
 ) {
     val scope = rememberCoroutineScope()
     // Bottom Sheet
-    val sheetState = rememberModalBottomSheetState()
+    val sheetState = rememberModalBottomSheetState(
+        skipPartiallyExpanded = true,
+    )
     var showBottomSheet by remember { mutableStateOf(false) }
     var fabVisible by remember { mutableStateOf(true) }
 
