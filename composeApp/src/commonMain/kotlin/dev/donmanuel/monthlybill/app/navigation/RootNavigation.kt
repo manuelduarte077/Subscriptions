@@ -33,7 +33,6 @@ import dev.donmanuel.monthlybill.app.navigation.tabs.addBillDetailsScreen
 import dev.donmanuel.monthlybill.app.navigation.tabs.addCalendarScreen
 import dev.donmanuel.monthlybill.app.navigation.tabs.addCategoryScreen
 import dev.donmanuel.monthlybill.app.navigation.tabs.addHomeScreen
-import dev.donmanuel.monthlybill.app.navigation.tabs.addSettingsScreen
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -93,7 +92,6 @@ fun RootNavigationGraph(
                 navController = navController,
             )
             addCategoryScreen()
-            addSettingsScreen()
             addBillDetailsScreen(
                 navController = navController,
             )

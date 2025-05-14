@@ -7,6 +7,7 @@ import dev.donmanuel.monthlybill.app.theme.MonthlyBillTheme
 
 @Composable
 fun App() {
+
     MonthlyBillTheme {
         val navController = rememberNavController()
         RootNavigationGraph(navController = navController)
