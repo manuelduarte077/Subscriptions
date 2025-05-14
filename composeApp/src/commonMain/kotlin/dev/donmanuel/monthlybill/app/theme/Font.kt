@@ -4,19 +4,24 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.sp
 import monthlybill.composeapp.generated.resources.Res
-import monthlybill.composeapp.generated.resources.bebas_neue_regular
-import monthlybill.composeapp.generated.resources.roboto_condensed_medium
+import monthlybill.composeapp.generated.resources.parkinsans_regular
+import monthlybill.composeapp.generated.resources.redhat_bold
+import monthlybill.composeapp.generated.resources.redhat_semi_bold
 import org.jetbrains.compose.resources.Font
 
-
 @Composable
-fun BebasNeueFont() = FontFamily(
-    Font(Res.font.bebas_neue_regular)
+fun parkinsansFont() = FontFamily(
+    Font(Res.font.parkinsans_regular)
 )
 
 @Composable
-fun RobotoCondensedFont() = FontFamily(
-    Font(Res.font.roboto_condensed_medium)
+fun redHatBoldFont() = FontFamily(
+    Font(Res.font.redhat_bold)
+)
+
+@Composable
+fun redHatSemiBoldFont() = FontFamily(
+    Font(Res.font.redhat_semi_bold)
 )
 
 object FontSize {

@@ -14,7 +14,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
 import dev.donmanuel.monthlybill.app.theme.FontSize
-import dev.donmanuel.monthlybill.app.theme.RobotoCondensedFont
+import dev.donmanuel.monthlybill.app.theme.redHatBoldFont
 import org.jetbrains.compose.resources.painterResource
 
 @Composable
@@ -69,9 +69,8 @@ fun BottomNavigationBarContent(
                     label = {
                         Text(
                             item.title,
-                            fontFamily = RobotoCondensedFont(),
+                            fontFamily = redHatBoldFont(),
                             fontSize = FontSize.REGULAR,
-                            color = MaterialTheme.colorScheme.primary,
                         )
                     },
                     selected = selectedItem == index,
