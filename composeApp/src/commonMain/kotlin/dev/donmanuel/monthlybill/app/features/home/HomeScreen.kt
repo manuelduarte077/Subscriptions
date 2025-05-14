@@ -84,7 +84,7 @@ fun HomeScreen(
 
         if (showBottomSheet) {
             ModalBottomSheet(
-                modifier = Modifier.fillMaxHeight(),
+                modifier = Modifier.wrapContentHeight(),
                 onDismissRequest = { showBottomSheet = false },
                 sheetState = sheetState,
             ) {
