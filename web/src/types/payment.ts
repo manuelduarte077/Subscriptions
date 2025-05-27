@@ -53,7 +53,9 @@ export interface PaymentFormData {
   provider: string;
   category: PaymentCategory;
   frequency: PaymentFrequency;
-  nextDueDate: Date;
+  startDate: Date; // Fecha de inicio de la suscripción
+  nextDueDate: Date; // Próxima fecha de pago calculada
   description?: string;
   cardLastFour?: string;
+  isPaid?: boolean; // Indica si el pago inicial ya se realizó
 }

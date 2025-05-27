@@ -20,6 +20,7 @@ export interface Payment {
   name: string;
   amount: number;
   dueDate: string;
+  startDate?: string; // Fecha de inicio de la suscripción
   category: string;
   description?: string;
   isPaid: boolean;
@@ -74,6 +75,7 @@ export const getPayments = async (userId?: string): Promise<Payment[]> => {
         category: data.category || 'other',
         isPaid: data.isPaid || false,
         dueDate: data.dueDate,
+        startDate: data.startDate, // Fecha de inicio de la suscripción
         // Campos necesarios para la compatibilidad con la aplicación
         provider: data.provider || '',
         frequency: data.frequency || 'monthly',

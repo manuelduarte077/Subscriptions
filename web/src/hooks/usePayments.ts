@@ -96,10 +96,11 @@ export const usePayments = () => {
         name: paymentData.name,
         amount: paymentData.amount,
         dueDate: paymentData.nextDueDate.toISOString(),
+        startDate: paymentData.startDate.toISOString(), // Fecha de inicio de la suscripción
         category: paymentData.category,
         provider: paymentData.provider, // Incluir el proveedor
         description: paymentData.description || '',
-        isPaid: false,
+        isPaid: paymentData.isPaid || false, // Estado de pago inicial
       };
       
       // Guardar el pago usando el servicio
@@ -177,28 +178,35 @@ export const usePayments = () => {
     }
   };
 
-  const markPaymentAsPaid = async (id: string, cardLastFour?: string) => {
+  const markPaymentAsPaid = async (id: string, cardLastFour?: string, paymentDate?: Date) => {
     try {
-      // Encontrar el pago
+      console.log('usePayments - Marking payment as paid:', id);
+      
+      // Buscar el pago en el estado local
       const payment = payments.find(p => p.id === id);
       if (!payment) {
         throw new Error('Pago no encontrado');
       }
       
-      // Cambiar el estado en el servicio
+      // Usar la fecha proporcionada o la fecha actual
+      const paidDate = paymentDate || new Date();
+      
+      // Marcar como pagado en el servicio
       const servicePayment = await togglePaymentStatus(id, user?.id);
+      
+      // Crear una entrada en el historial de pagos
+      const historyEntry: PaymentHistoryEntry = {
+        id: crypto.randomUUID(),
+        date: paidDate,
+        status: 'paid',
+        amount: payment.amount,
+        cardLastFour
+      };
       
       // Actualizar el estado local con lógica adicional para la próxima fecha
       setPayments(prev => 
         prev.map(p => {
           if (p.id === id) {
-            const historyEntry: PaymentHistoryEntry = {
-              id: crypto.randomUUID(),
-              date: new Date(),
-              status: 'paid',
-              amount: p.amount,
-              cardLastFour
-            };
 
             // Calcular la próxima fecha de pago basada en la frecuencia
             const nextDue = new Date(p.nextDueDate);

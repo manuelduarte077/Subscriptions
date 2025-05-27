@@ -5,6 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
+import { Checkbox } from '@/components/ui/checkbox';
 import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { CalendarIcon, CreditCard } from 'lucide-react';
@@ -28,10 +29,41 @@ const PaymentForm = ({ onSuccess }: PaymentFormProps) => {
     provider: '',
     category: 'subscription',
     frequency: 'monthly',
+    startDate: new Date(),
     nextDueDate: new Date(),
     description: '',
     cardLastFour: '',
+    isPaid: false,
   });
+  
+  // Función para calcular la próxima fecha de pago basada en la fecha de inicio y frecuencia
+  const calculateNextDueDate = (startDate: Date, frequency: PaymentFrequency) => {
+    const nextDate = new Date(startDate);
+    
+    switch (frequency) {
+      case 'monthly':
+        // Si el día actual es después del día de pago en el mes actual,
+        // la próxima fecha será el mismo día del mes siguiente
+        if (new Date().getDate() > startDate.getDate()) {
+          nextDate.setMonth(nextDate.getMonth() + 1);
+        }
+        break;
+      case 'yearly':
+        nextDate.setFullYear(nextDate.getFullYear() + 1);
+        break;
+      case 'quarterly':
+        nextDate.setMonth(nextDate.getMonth() + 3);
+        break;
+      case 'weekly':
+        nextDate.setDate(nextDate.getDate() + 7);
+        break;
+      case 'one-time':
+        // Para pagos únicos, la próxima fecha es la misma
+        break;
+    }
+    
+    return nextDate;
+  };
 
   const categoryOptions: { value: PaymentCategory; label: string }[] = [
     { value: 'streaming', label: 'Streaming (Netflix, HBO, etc.)' },
@@ -80,9 +112,11 @@ const PaymentForm = ({ onSuccess }: PaymentFormProps) => {
         provider: '',
         category: 'subscription',
         frequency: 'monthly',
+        startDate: new Date(),
         nextDueDate: new Date(),
         description: '',
         cardLastFour: '',
+        isPaid: false,
       });
       
       onSuccess();
@@ -196,19 +230,48 @@ const PaymentForm = ({ onSuccess }: PaymentFormProps) => {
             </div>
 
             <div className="space-y-2">
-              <Label>Próxima fecha de pago *</Label>
+              <Label>Frecuencia de pago</Label>
+              <Select
+                value={formData.frequency}
+                onValueChange={(value: PaymentFrequency) => {
+                  // Al cambiar la frecuencia, recalcular la próxima fecha de pago
+                  const nextDueDate = calculateNextDueDate(formData.startDate, value);
+                  setFormData(prev => ({ 
+                    ...prev, 
+                    frequency: value,
+                    nextDueDate
+                  }));
+                }}
+              >
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {frequencyOptions.map((option) => (
+                    <SelectItem key={option.value} value={option.value}>
+                      {option.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label>Fecha de inicio de suscripción *</Label>
               <Popover>
                 <PopoverTrigger asChild>
                   <Button
                     variant="outline"
                     className={cn(
                       "w-full justify-start text-left font-normal",
-                      !formData.nextDueDate && "text-muted-foreground"
+                      !formData.startDate && "text-muted-foreground"
                     )}
                   >
                     <CalendarIcon className="mr-2 h-4 w-4" />
-                    {formData.nextDueDate ? (
-                      format(formData.nextDueDate, "PPP", { locale: es })
+                    {formData.startDate ? (
+                      format(formData.startDate, "PPP", { locale: es })
                     ) : (
                       <span>Seleccionar fecha</span>
                     )}
@@ -217,16 +280,50 @@ const PaymentForm = ({ onSuccess }: PaymentFormProps) => {
                 <PopoverContent className="w-auto p-0" align="start">
                   <Calendar
                     mode="single"
-                    selected={formData.nextDueDate}
-                    onSelect={(date) => 
-                      date && setFormData(prev => ({ ...prev, nextDueDate: date }))
-                    }
+                    selected={formData.startDate}
+                    onSelect={(date) => {
+                      if (date) {
+                        // Calcular la próxima fecha de pago basada en la fecha de inicio
+                        const nextDueDate = calculateNextDueDate(date, formData.frequency);
+                        setFormData(prev => ({ 
+                          ...prev, 
+                          startDate: date,
+                          nextDueDate
+                        }));
+                      }
+                    }}
                     initialFocus
                     className="p-3 pointer-events-auto"
                   />
                 </PopoverContent>
               </Popover>
             </div>
+
+            <div className="space-y-2">
+              <Label>Próxima fecha de pago (calculada)</Label>
+              <div className="p-2 border rounded-md bg-muted/20">
+                <div className="flex items-center gap-2">
+                  <CalendarIcon className="h-4 w-4 text-muted-foreground" />
+                  <span>{format(formData.nextDueDate, "PPP", { locale: es })}</span>
+                </div>
+                <p className="text-xs text-muted-foreground mt-1">
+                  Calculada automáticamente según la fecha de inicio y frecuencia
+                </p>
+              </div>
+            </div>
+          </div>
+          
+          <div className="flex items-center space-x-2">
+            <Checkbox 
+              id="isPaid" 
+              checked={formData.isPaid}
+              onCheckedChange={(checked) => 
+                setFormData(prev => ({ ...prev, isPaid: checked === true }))
+              }
+            />
+            <Label htmlFor="isPaid" className="cursor-pointer">
+              Ya realicé el primer pago de esta suscripción
+            </Label>
           </div>
 
           <div className="space-y-2">

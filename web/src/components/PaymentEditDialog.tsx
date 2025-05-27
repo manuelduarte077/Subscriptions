@@ -4,6 +4,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/u
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Checkbox } from '@/components/ui/checkbox';
 import { Badge } from '@/components/ui/badge';
 import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
@@ -25,12 +26,14 @@ interface PaymentEditDialogProps {
 const PaymentEditDialog = ({ payment, open, onOpenChange }: PaymentEditDialogProps) => {
   const { markPaymentAsPaid, cancelPayment, resumePayment, updatePayment } = usePayments();
   const [cardLastFour, setCardLastFour] = useState('');
+  const [paymentDate, setPaymentDate] = useState<Date>(new Date());
   const [resumeDate, setResumeDate] = useState<Date>(new Date());
+  const [showPaymentDatePicker, setShowPaymentDatePicker] = useState(false);
 
   if (!payment) return null;
 
   const handleMarkAsPaid = () => {
-    markPaymentAsPaid(payment.id, cardLastFour);
+    markPaymentAsPaid(payment.id, cardLastFour, showPaymentDatePicker ? paymentDate : undefined);
     toast({
       title: "Pago registrado",
       description: `${payment.name} ha sido marcado como pagado`,
@@ -127,6 +130,57 @@ const PaymentEditDialog = ({ payment, open, onOpenChange }: PaymentEditDialogPro
                 Actualizar
               </Button>
             </div>
+          </div>
+
+          {/* Fecha de pago */}
+          <div className="space-y-2">
+            <div className="flex items-center space-x-2">
+              <Checkbox 
+                id="showPaymentDatePicker" 
+                checked={showPaymentDatePicker}
+                onCheckedChange={(checked) => 
+                  setShowPaymentDatePicker(checked === true)
+                }
+              />
+              <Label htmlFor="showPaymentDatePicker" className="cursor-pointer">
+                Especificar fecha de pago diferente
+              </Label>
+            </div>
+            
+            {showPaymentDatePicker && (
+              <div className="mt-2">
+                <Label>Fecha de pago</Label>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant="outline"
+                      className={cn(
+                        "w-full justify-start text-left font-normal mt-1",
+                        !paymentDate && "text-muted-foreground"
+                      )}
+                    >
+                      <CalendarIcon className="mr-2 h-4 w-4" />
+                      {paymentDate ? (
+                        format(paymentDate, "PPP", { locale: es })
+                      ) : (
+                        <span>Seleccionar fecha</span>
+                      )}
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0" align="start">
+                    <Calendar
+                      mode="single"
+                      selected={paymentDate}
+                      onSelect={(date) => date && setPaymentDate(date)}
+                      initialFocus
+                    />
+                  </PopoverContent>
+                </Popover>
+                <p className="text-xs text-muted-foreground mt-1">
+                  Útil para registrar pagos de meses anteriores
+                </p>
+              </div>
+            )}
           </div>
 
           {/* Actions */}
