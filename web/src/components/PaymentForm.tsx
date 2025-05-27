@@ -178,20 +178,24 @@ const PaymentForm = ({ onSuccess }: PaymentFormProps) => {
                   className="pl-8"
                   value={formData.amount || ''}
                   onChange={(e) => setFormData(prev => ({ ...prev, amount: parseFloat(e.target.value) || 0 }))}
-                  min="0"
-                  step="0.01"
                   required
                 />
               </div>
             </div>
 
             <div className="space-y-2">
-              <Label>Frecuencia *</Label>
+              <Label>Frecuencia de pago *</Label>
               <Select
                 value={formData.frequency}
-                onValueChange={(value: PaymentFrequency) => 
-                  setFormData(prev => ({ ...prev, frequency: value }))
-                }
+                onValueChange={(value: PaymentFrequency) => {
+                  // Al cambiar la frecuencia, recalcular la próxima fecha de pago
+                  const nextDueDate = calculateNextDueDate(formData.startDate, value);
+                  setFormData(prev => ({ 
+                    ...prev, 
+                    frequency: value,
+                    nextDueDate
+                  }));
+                }}
               >
                 <SelectTrigger>
                   <SelectValue />
@@ -221,33 +225,6 @@ const PaymentForm = ({ onSuccess }: PaymentFormProps) => {
                 </SelectTrigger>
                 <SelectContent>
                   {categoryOptions.map((option) => (
-                    <SelectItem key={option.value} value={option.value}>
-                      {option.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-
-            <div className="space-y-2">
-              <Label>Frecuencia de pago</Label>
-              <Select
-                value={formData.frequency}
-                onValueChange={(value: PaymentFrequency) => {
-                  // Al cambiar la frecuencia, recalcular la próxima fecha de pago
-                  const nextDueDate = calculateNextDueDate(formData.startDate, value);
-                  setFormData(prev => ({ 
-                    ...prev, 
-                    frequency: value,
-                    nextDueDate
-                  }));
-                }}
-              >
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  {frequencyOptions.map((option) => (
                     <SelectItem key={option.value} value={option.value}>
                       {option.label}
                     </SelectItem>

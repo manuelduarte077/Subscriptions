@@ -1,5 +1,5 @@
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -29,6 +29,17 @@ const PaymentEditDialog = ({ payment, open, onOpenChange }: PaymentEditDialogPro
   const [paymentDate, setPaymentDate] = useState<Date>(new Date());
   const [resumeDate, setResumeDate] = useState<Date>(new Date());
   const [showPaymentDatePicker, setShowPaymentDatePicker] = useState(false);
+  
+  const [isPaymentDue, setIsPaymentDue] = useState(false);
+
+  useEffect(() => {
+    if (payment) {
+      const today = new Date();
+      const dueDate = new Date(payment.nextDueDate);
+    
+      setIsPaymentDue(today >= dueDate);
+    }
+  }, [payment]);
 
   if (!payment) return null;
 
@@ -185,18 +196,26 @@ const PaymentEditDialog = ({ payment, open, onOpenChange }: PaymentEditDialogPro
 
           {/* Actions */}
           {payment.isActive ? (
-            <div className="flex gap-3">
-              <Button 
-                onClick={handleMarkAsPaid} 
-                className="flex-1"
-                variant="default"
-              >
-                <Check className="w-4 h-4 mr-2" />
-                Marcar como Pagado
-              </Button>
+            <div className="flex gap-3 flex-col">
+              {isPaymentDue ? (
+                <Button 
+                  onClick={handleMarkAsPaid} 
+                  className="w-full"
+                  variant="default"
+                >
+                  <Check className="w-4 h-4 mr-2" />
+                  Marcar como Pagado
+                </Button>
+              ) : (
+                <div className="bg-muted p-3 rounded-md mb-2">
+                  <p className="text-sm text-center text-muted-foreground">
+                    El pago estará disponible a partir del {format(payment.nextDueDate, "d 'de' MMMM", { locale: es })}
+                  </p>
+                </div>
+              )}
               <Button 
                 onClick={handleCancel} 
-                className="flex-1"
+                className="w-full"
                 variant="destructive"
               >
                 <X className="w-4 h-4 mr-2" />
