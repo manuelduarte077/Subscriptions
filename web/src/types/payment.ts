@@ -1,4 +1,5 @@
 
+// Definición del tipo Payment para la aplicación
 export interface Payment {
   id: string;
   name: string;
@@ -7,12 +8,20 @@ export interface Payment {
   category: PaymentCategory;
   frequency: PaymentFrequency;
   nextDueDate: Date;
+  dueDate?: string; // Para compatibilidad con el nuevo servicio
   description?: string;
   isActive: boolean;
+  isPaid?: boolean; // Para compatibilidad con el nuevo servicio
   createdAt: Date;
   cardLastFour?: string;
   paymentHistory: PaymentHistoryEntry[];
+  userId?: string; // ID del usuario propietario del pago
 }
+
+// Tipo para conversión entre el servicio y la aplicación
+export type PaymentServiceType = Omit<Payment, 'dueDate'> & {
+  dueDate?: string;
+};
 
 export interface PaymentHistoryEntry {
   id: string;

@@ -1,6 +1,7 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
+import { syncPaymentsWithUser } from '@/services/PaymentService';
 
 // Definir el tipo de usuario
 export interface User {
@@ -75,6 +76,10 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         // Guardar usuario en localStorage
         localStorage.setItem('user', JSON.stringify(userData));
         setUser(userData);
+        
+        // Sincronizar pagos con el usuario
+        syncPaymentsWithUser(userData.id);
+        
         toast.success('Inicio de sesión exitoso');
         return true;
       } else {
@@ -108,6 +113,10 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       // Guardar usuario en localStorage
       localStorage.setItem('user', JSON.stringify(userData));
       setUser(userData);
+      
+      // Sincronizar pagos con el usuario
+      syncPaymentsWithUser(userData.id);
+      
       toast.success('Registro exitoso');
       return true;
     } catch (error) {

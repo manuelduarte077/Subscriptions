@@ -1,147 +1,200 @@
 import { useState, useEffect } from 'react';
-import { Payment, PaymentFormData, PaymentHistoryEntry } from '@/types/payment';
+import { Payment, PaymentFormData, PaymentHistoryEntry, PaymentServiceType, PaymentCategory } from '@/types/payment';
+import { useAuth } from '@/contexts/AuthContext';
+import { getPayments, savePayment, updatePayment as updatePaymentService, deletePayment as deletePaymentService, togglePaymentStatus } from '@/services/PaymentService';
 
-// Clave constante para localStorage
+// Clave constante para localStorage (para retrocompatibilidad)
 const STORAGE_KEY = 'payment-reminders';
 
 export const usePayments = () => {
   const [payments, setPayments] = useState<Payment[]>([]);
+  const { user } = useAuth();
 
-  // Load payments from localStorage on mount
+  // Cargar pagos del servicio
   useEffect(() => {
-    console.log('usePayments - Loading payments from localStorage');
+    console.log('usePayments - Loading payments');
     try {
-      const savedPayments = localStorage.getItem(STORAGE_KEY);
-      console.log('usePayments - Raw saved data:', savedPayments);
+      // Si el usuario está autenticado, obtener sus pagos
+      const userPayments = getPayments(user?.id);
+      console.log('usePayments - Loaded payments:', userPayments);
       
-      if (savedPayments) {
+      // Convertir las fechas de string a Date
+      const paymentsWithDates = userPayments.map((payment: any) => {
         try {
-          const parsed = JSON.parse(savedPayments);
-          console.log('usePayments - Parsed data:', parsed);
+          return {
+            ...payment,
+            nextDueDate: payment.nextDueDate ? new Date(payment.nextDueDate) : new Date(),
+            createdAt: payment.createdAt ? new Date(payment.createdAt) : new Date(),
+            paymentHistory: Array.isArray(payment.paymentHistory) 
+              ? payment.paymentHistory.map((entry: any) => ({
+                  ...entry,
+                  date: new Date(entry.date)
+                })) 
+              : [],
+          };
+        } catch (err) {
+          console.error('usePayments - Error processing payment:', payment, err);
+          return null;
+        }
+      }).filter(Boolean); // Eliminar entradas nulas
+      
+      setPayments(paymentsWithDates);
+      
+      // Para compatibilidad con versiones anteriores, migrar datos del antiguo localStorage
+      migrateOldData();
+    } catch (error) {
+      console.error('usePayments - Error loading payments:', error);
+    }
+  }, [user?.id]);
+  
+  // Función para migrar datos del antiguo formato al nuevo
+  const migrateOldData = () => {
+    try {
+      const oldData = localStorage.getItem(STORAGE_KEY);
+      if (oldData) {
+        const oldPayments = JSON.parse(oldData);
+        if (Array.isArray(oldPayments) && oldPayments.length > 0) {
+          console.log('usePayments - Migrating old data to new format');
           
-          if (!Array.isArray(parsed)) {
-            console.error('usePayments - Saved data is not an array');
-            return;
-          }
+          // Convertir y guardar cada pago antiguo en el nuevo formato
+          oldPayments.forEach((oldPayment: any) => {
+            const newPayment = {
+              name: oldPayment.name,
+              amount: oldPayment.amount,
+              dueDate: oldPayment.nextDueDate,
+              category: oldPayment.category || 'other',
+              description: oldPayment.description || '',
+              isPaid: !oldPayment.isActive,
+              userId: user?.id
+            };
+            
+            savePayment(newPayment, user?.id);
+          });
           
-          // Convert date strings back to Date objects
-          const paymentsWithDates = parsed.map((payment: any) => {
-            try {
-              return {
-                ...payment,
-                nextDueDate: new Date(payment.nextDueDate),
-                createdAt: new Date(payment.createdAt),
-                paymentHistory: Array.isArray(payment.paymentHistory) 
-                  ? payment.paymentHistory.map((entry: any) => ({
-                      ...entry,
-                      date: new Date(entry.date)
-                    })) 
-                  : [],
-              };
-            } catch (err) {
-              console.error('usePayments - Error processing payment:', payment, err);
-              return null;
-            }
-          }).filter(Boolean); // Remove any null entries
-          
-          console.log('usePayments - Payments with dates:', paymentsWithDates);
-          setPayments(paymentsWithDates);
-        } catch (error) {
-          console.error('usePayments - Error parsing saved payments:', error);
-          // Limpiar localStorage si hay un error de parseo
+          // Eliminar los datos antiguos después de migrarlos
           localStorage.removeItem(STORAGE_KEY);
         }
-      } else {
-        console.log('usePayments - No saved payments found');
       }
     } catch (error) {
-      console.error('usePayments - Error accessing localStorage:', error);
+      console.error('usePayments - Error migrating old data:', error);
     }
-  }, []);
+  };
 
-  // Save to localStorage whenever payments change
-  useEffect(() => {
-    try {
-      if (payments.length > 0) {
-        console.log('usePayments - Saving payments to localStorage:', payments);
-        const serializedData = JSON.stringify(payments);
-        localStorage.setItem(STORAGE_KEY, serializedData);
-        console.log('usePayments - Data saved successfully, size:', serializedData.length);
-      } else {
-        console.log('usePayments - No payments to save');
-      }
-    } catch (error) {
-      console.error('usePayments - Error saving to localStorage:', error);
-    }
-  }, [payments]);
+  // Ya no necesitamos guardar en localStorage en cada cambio, el servicio se encarga de eso
 
   const addPayment = (paymentData: PaymentFormData) => {
     try {
       console.log('usePayments - Adding new payment:', paymentData);
-      const newPayment: Payment = {
-        id: crypto.randomUUID(),
-        ...paymentData,
-        isActive: true,
-        createdAt: new Date(),
-        paymentHistory: [],
-      };
-      console.log('usePayments - New payment created:', newPayment);
-      setPayments(prev => {
-        const updated = [...prev, newPayment];
-        console.log('usePayments - Updated payments array:', updated);
-        return updated;
-      });
       
-      // Verificar inmediatamente si se guardó correctamente
-      setTimeout(() => {
-        try {
-          const savedData = localStorage.getItem(STORAGE_KEY);
-          console.log('usePayments - Verification after save:', savedData ? 'Data saved' : 'No data found');
-        } catch (error) {
-          console.error('usePayments - Error verifying save:', error);
-        }
-      }, 100);
+      // Convertir del formato de formulario al formato del servicio
+      const newPaymentData = {
+        name: paymentData.name,
+        amount: paymentData.amount,
+        dueDate: paymentData.nextDueDate.toISOString(),
+        category: paymentData.category,
+        description: paymentData.description || '',
+        isPaid: false,
+      };
+      
+      // Guardar el pago usando el servicio
+      const savedPayment = savePayment(newPaymentData, user?.id);
+      
+      // Actualizar el estado local
+      setPayments(prev => {
+        const newPayment: Payment = {
+          ...savedPayment,
+          nextDueDate: new Date(savedPayment.dueDate || new Date().toISOString()),
+          dueDate: savedPayment.dueDate,
+          provider: paymentData.provider || '',
+          frequency: paymentData.frequency || 'monthly',
+          category: (paymentData.category || savedPayment.category) as PaymentCategory,
+          createdAt: new Date(),
+          paymentHistory: [],
+          isActive: true,
+        };
+        return [...prev, newPayment];
+      });
     } catch (error) {
       console.error('usePayments - Error adding payment:', error);
+      throw error;
     }
   };
 
   const updatePayment = (id: string, updatedData: Partial<Payment>) => {
     try {
+      // Encontrar el pago existente
+      const existingPayment = payments.find(p => p.id === id);
+      if (!existingPayment) {
+        throw new Error('Pago no encontrado');
+      }
+      
+      // Crear el pago actualizado
+      const updatedPayment = {
+        ...existingPayment,
+        ...updatedData,
+      };
+      
+      // Convertir a formato de servicio
+      const servicePayment: PaymentServiceType = {
+        ...updatedPayment,
+        dueDate: updatedPayment.nextDueDate?.toISOString() || new Date().toISOString()
+      };
+      
+      // Actualizar en el servicio
+      updatePaymentService(servicePayment as any);
+      
+      // Actualizar el estado local
       setPayments(prev => 
         prev.map(payment => 
-          payment.id === id ? { ...payment, ...updatedData } : payment
+          payment.id === id ? updatedPayment : payment
         )
       );
     } catch (error) {
       console.error('usePayments - Error updating payment:', error);
+      throw error;
     }
   };
 
   const deletePayment = (id: string) => {
     try {
+      // Eliminar del servicio
+      deletePaymentService(id);
+      
+      // Actualizar el estado local
       setPayments(prev => prev.filter(payment => payment.id !== id));
     } catch (error) {
       console.error('usePayments - Error deleting payment:', error);
+      throw error;
     }
   };
 
   const markPaymentAsPaid = (id: string, cardLastFour?: string) => {
     try {
+      // Encontrar el pago
+      const payment = payments.find(p => p.id === id);
+      if (!payment) {
+        throw new Error('Pago no encontrado');
+      }
+      
+      // Cambiar el estado en el servicio
+      const servicePayment = togglePaymentStatus(id);
+      
+      // Actualizar el estado local con lógica adicional para la próxima fecha
       setPayments(prev => 
-        prev.map(payment => {
-          if (payment.id === id) {
+        prev.map(p => {
+          if (p.id === id) {
             const historyEntry: PaymentHistoryEntry = {
               id: crypto.randomUUID(),
               date: new Date(),
               status: 'paid',
-              amount: payment.amount,
-              cardLastFour: cardLastFour || payment.cardLastFour
+              amount: p.amount,
+              cardLastFour
             };
 
-            // Calculate next due date based on frequency
-            const nextDue = new Date(payment.nextDueDate);
-            switch (payment.frequency) {
+            // Calcular la próxima fecha de pago basada en la frecuencia
+            const nextDue = new Date(p.nextDueDate);
+            
+            switch (p.frequency) {
               case 'monthly':
                 nextDue.setMonth(nextDue.getMonth() + 1);
                 break;
@@ -156,25 +209,28 @@ export const usePayments = () => {
                 break;
               case 'one-time':
                 return {
-                  ...payment,
+                  ...p,
                   isActive: false,
-                  paymentHistory: [...payment.paymentHistory, historyEntry],
-                  cardLastFour: cardLastFour || payment.cardLastFour
+                  isPaid: true,
+                  paymentHistory: [...p.paymentHistory, historyEntry],
+                  cardLastFour: cardLastFour || p.cardLastFour
                 };
             }
 
             return {
-              ...payment,
+              ...p,
               nextDueDate: nextDue,
-              paymentHistory: [...payment.paymentHistory, historyEntry],
-              cardLastFour: cardLastFour || payment.cardLastFour
+              isPaid: servicePayment.isPaid,
+              paymentHistory: [...p.paymentHistory, historyEntry],
+              cardLastFour: cardLastFour || p.cardLastFour
             };
           }
-          return payment;
+          return p;
         })
       );
     } catch (error) {
       console.error('usePayments - Error marking payment as paid:', error);
+      throw error;
     }
   };
 
