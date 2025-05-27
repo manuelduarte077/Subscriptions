@@ -1,9 +1,12 @@
 package dev.donmanuel.monthlybill.app.features.home
 
+import androidx.compose.foundation.LocalIndication
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -61,13 +64,12 @@ fun HomeScreen(
                     Icon(
                         imageVector = Icons.Filled.Settings,
                         contentDescription = "Settings",
-
                         tint = MaterialTheme.colorScheme.primary,
                         modifier = Modifier
-                            .size(48.dp) // Expand to meet accessibility standards
+                            .size(32.dp)
                             .clickable(
                                 onClick = { showBottomSheet = true },
-                                indication = LocalIndication.current, // Add ripple effect
+                                indication = LocalIndication.current,
                                 interactionSource = remember { MutableInteractionSource() }
                             )
                     )
@@ -86,7 +88,7 @@ fun HomeScreen(
 
         if (showBottomSheet) {
             ModalBottomSheet(
-                modifier = Modifier.wrapContentHeight(),
+                modifier = Modifier.wrapContentHeight(), // Adjust height as needed
                 onDismissRequest = { showBottomSheet = false },
                 sheetState = sheetState,
             ) {
