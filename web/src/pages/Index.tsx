@@ -1,11 +1,12 @@
-
 import { useState } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import Dashboard from '@/components/Dashboard';
 import PaymentForm from '@/components/PaymentForm';
 import PaymentCalendar from '@/components/PaymentCalendar';
 import PaymentList from '@/components/PaymentList';
+import Navbar from '@/components/Navbar';
 import { Home, Plus, Calendar, List } from 'lucide-react';
+import { useAuth } from '@/contexts/AuthContext';
 
 const Index = () => {
   const [activeTab, setActiveTab] = useState('dashboard');
@@ -14,8 +15,11 @@ const Index = () => {
     setActiveTab('dashboard');
   };
 
+  const { user } = useAuth();
+  
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-green-50">
+      <Navbar />
       <div className="container mx-auto px-4 py-8">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
           <TabsList className="grid grid-cols-4 w-full max-w-2xl mx-auto mb-8">
