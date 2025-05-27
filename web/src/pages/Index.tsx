@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import Dashboard from '@/components/Dashboard';
 import PaymentForm from '@/components/PaymentForm';
@@ -10,10 +10,17 @@ import { useAuth } from '@/contexts/AuthContext';
 
 const Index = () => {
   const [activeTab, setActiveTab] = useState('dashboard');
+  const [refreshKey, setRefreshKey] = useState(0); // Estado para forzar actualización
 
   const handleAddPaymentSuccess = () => {
     setActiveTab('dashboard');
+    setRefreshKey(prevKey => prevKey + 1); // Incrementar la clave para forzar actualización
   };
+  
+  // Forzar actualización cuando se cambia de pestaña
+  useEffect(() => {
+    setRefreshKey(prevKey => prevKey + 1);
+  }, [activeTab]);
 
   const { user } = useAuth();
   
@@ -42,19 +49,19 @@ const Index = () => {
           </TabsList>
 
           <TabsContent value="dashboard">
-            <Dashboard onAddPayment={() => setActiveTab('add')} />
+            <Dashboard key={`dashboard-${refreshKey}`} onAddPayment={() => setActiveTab('add')} />
           </TabsContent>
 
           <TabsContent value="add">
-            <PaymentForm onSuccess={handleAddPaymentSuccess} />
+            <PaymentForm key={`form-${refreshKey}`} onSuccess={handleAddPaymentSuccess} />
           </TabsContent>
 
           <TabsContent value="calendar">
-            <PaymentCalendar />
+            <PaymentCalendar key={`calendar-${refreshKey}`} />
           </TabsContent>
 
           <TabsContent value="list">
-            <PaymentList />
+            <PaymentList key={`list-${refreshKey}`} />
           </TabsContent>
         </Tabs>
       </div>

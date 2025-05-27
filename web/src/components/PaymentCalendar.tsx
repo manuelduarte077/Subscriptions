@@ -21,15 +21,40 @@ const PaymentCalendar = () => {
   // Get payments for selected date
   const selectedDatePayments = selectedDate 
     ? payments.filter(payment => {
+        if (!payment.nextDueDate) return false;
+        
+        // Asegurarse de que estamos comparando objetos Date correctamente
         const paymentDate = new Date(payment.nextDueDate);
-        return paymentDate.toDateString() === selectedDate.toDateString() && payment.isActive;
+        const selectedDateStr = selectedDate.toDateString();
+        const paymentDateStr = paymentDate.toDateString();
+        
+        console.log('Comparing dates:', {
+          paymentDate,
+          selectedDate,
+          paymentDateStr,
+          selectedDateStr,
+          match: paymentDateStr === selectedDateStr
+        });
+        
+        return paymentDateStr === selectedDateStr && payment.isActive;
       })
     : [];
 
   // Create a map of dates with payments for styling
   const paymentsByDate = new Map();
   monthPayments.forEach(payment => {
-    const dateKey = new Date(payment.nextDueDate).toDateString();
+    if (!payment.nextDueDate) return;
+    
+    // Asegurarse de que estamos trabajando con objetos Date correctos
+    const paymentDate = new Date(payment.nextDueDate);
+    const dateKey = paymentDate.toDateString();
+    
+    console.log('Adding payment to date map:', {
+      payment: payment.name,
+      paymentDate,
+      dateKey
+    });
+    
     if (!paymentsByDate.has(dateKey)) {
       paymentsByDate.set(dateKey, []);
     }

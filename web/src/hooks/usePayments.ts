@@ -112,7 +112,8 @@ export const usePayments = () => {
           id: savedPayment.id,
           name: savedPayment.name,
           amount: savedPayment.amount,
-          nextDueDate: new Date(savedPayment.dueDate || new Date().toISOString()),
+          // Usar la fecha seleccionada por el usuario en el formulario
+          nextDueDate: new Date(paymentData.nextDueDate),
           dueDate: savedPayment.dueDate,
           provider: paymentData.provider || '',
           frequency: paymentData.frequency || 'monthly',
@@ -313,14 +314,34 @@ export const usePayments = () => {
 
   const getPaymentsByMonth = (month: number, year: number) => {
     try {
-      return payments.filter(payment => {
+      console.log(`Filtering payments for ${month}/${year}:`, payments);
+      
+      const filteredPayments = payments.filter(payment => {
         if (!payment.nextDueDate) return false;
         
+        // Asegurarse de que estamos trabajando con objetos Date correctos
         const dueDate = new Date(payment.nextDueDate);
-        return dueDate.getMonth() === month && 
-               dueDate.getFullYear() === year && 
-               payment.isActive;
+        const matchesMonth = dueDate.getMonth() === month;
+        const matchesYear = dueDate.getFullYear() === year;
+        const isActive = payment.isActive !== false; // Si no está definido, asumimos que está activo
+        
+        console.log(`Payment ${payment.name} date check:`, {
+          dueDate,
+          month: dueDate.getMonth(),
+          targetMonth: month,
+          year: dueDate.getFullYear(),
+          targetYear: year,
+          matchesMonth,
+          matchesYear,
+          isActive,
+          included: matchesMonth && matchesYear && isActive
+        });
+        
+        return matchesMonth && matchesYear && isActive;
       });
+      
+      console.log(`Found ${filteredPayments.length} payments for ${month}/${year}`);
+      return filteredPayments;
     } catch (error) {
       console.error('usePayments - Error getting payments by month:', error);
       return [];
