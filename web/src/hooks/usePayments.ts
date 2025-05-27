@@ -12,43 +12,47 @@ export const usePayments = () => {
 
   // Cargar pagos del servicio
   useEffect(() => {
-    console.log('usePayments - Loading payments');
-    try {
-      // Si el usuario está autenticado, obtener sus pagos
-      const userPayments = getPayments(user?.id);
-      console.log('usePayments - Loaded payments:', userPayments);
-      
-      // Convertir las fechas de string a Date
-      const paymentsWithDates = userPayments.map((payment: any) => {
-        try {
-          return {
-            ...payment,
-            nextDueDate: payment.nextDueDate ? new Date(payment.nextDueDate) : new Date(),
-            createdAt: payment.createdAt ? new Date(payment.createdAt) : new Date(),
-            paymentHistory: Array.isArray(payment.paymentHistory) 
-              ? payment.paymentHistory.map((entry: any) => ({
-                  ...entry,
-                  date: new Date(entry.date)
-                })) 
-              : [],
-          };
-        } catch (err) {
-          console.error('usePayments - Error processing payment:', payment, err);
-          return null;
-        }
-      }).filter(Boolean); // Eliminar entradas nulas
-      
-      setPayments(paymentsWithDates);
-      
-      // Para compatibilidad con versiones anteriores, migrar datos del antiguo localStorage
-      migrateOldData();
-    } catch (error) {
-      console.error('usePayments - Error loading payments:', error);
-    }
+    const loadPayments = async () => {
+      console.log('usePayments - Loading payments');
+      try {
+        // Si el usuario está autenticado, obtener sus pagos
+        const userPayments = await getPayments(user?.id);
+        console.log('usePayments - Loaded payments:', userPayments);
+        
+        // Convertir las fechas de string a Date
+        const paymentsWithDates = userPayments.map((payment: any) => {
+          try {
+            return {
+              ...payment,
+              nextDueDate: payment.nextDueDate ? new Date(payment.nextDueDate) : new Date(),
+              createdAt: payment.createdAt ? new Date(payment.createdAt) : new Date(),
+              paymentHistory: Array.isArray(payment.paymentHistory) 
+                ? payment.paymentHistory.map((entry: any) => ({
+                    ...entry,
+                    date: new Date(entry.date)
+                  })) 
+                : [],
+            };
+          } catch (err) {
+            console.error('usePayments - Error processing payment:', payment, err);
+            return null;
+          }
+        }).filter(Boolean); // Eliminar entradas nulas
+        
+        setPayments(paymentsWithDates);
+        
+        // Para compatibilidad con versiones anteriores, migrar datos del antiguo localStorage
+        await migrateOldData();
+      } catch (error) {
+        console.error('usePayments - Error loading payments:', error);
+      }
+    };
+    
+    loadPayments();
   }, [user?.id]);
   
   // Función para migrar datos del antiguo formato al nuevo
-  const migrateOldData = () => {
+  const migrateOldData = async () => {
     try {
       const oldData = localStorage.getItem(STORAGE_KEY);
       if (oldData) {
@@ -57,7 +61,7 @@ export const usePayments = () => {
           console.log('usePayments - Migrating old data to new format');
           
           // Convertir y guardar cada pago antiguo en el nuevo formato
-          oldPayments.forEach((oldPayment: any) => {
+          for (const oldPayment of oldPayments) {
             const newPayment = {
               name: oldPayment.name,
               amount: oldPayment.amount,
@@ -68,8 +72,8 @@ export const usePayments = () => {
               userId: user?.id
             };
             
-            savePayment(newPayment, user?.id);
-          });
+            await savePayment(newPayment, user?.id);
+          }
           
           // Eliminar los datos antiguos después de migrarlos
           localStorage.removeItem(STORAGE_KEY);
@@ -82,7 +86,7 @@ export const usePayments = () => {
 
   // Ya no necesitamos guardar en localStorage en cada cambio, el servicio se encarga de eso
 
-  const addPayment = (paymentData: PaymentFormData) => {
+  const addPayment = async (paymentData: PaymentFormData) => {
     try {
       console.log('usePayments - Adding new payment:', paymentData);
       
@@ -97,20 +101,23 @@ export const usePayments = () => {
       };
       
       // Guardar el pago usando el servicio
-      const savedPayment = savePayment(newPaymentData, user?.id);
+      const savedPayment = await savePayment(newPaymentData, user?.id);
       
       // Actualizar el estado local
       setPayments(prev => {
         const newPayment: Payment = {
-          ...savedPayment,
+          id: savedPayment.id,
+          name: savedPayment.name,
+          amount: savedPayment.amount,
           nextDueDate: new Date(savedPayment.dueDate || new Date().toISOString()),
           dueDate: savedPayment.dueDate,
           provider: paymentData.provider || '',
           frequency: paymentData.frequency || 'monthly',
-          category: (paymentData.category || savedPayment.category) as PaymentCategory,
+          category: (paymentData.category || 'other') as PaymentCategory,
           createdAt: new Date(),
           paymentHistory: [],
           isActive: true,
+          isPaid: savedPayment.isPaid || false
         };
         return [...prev, newPayment];
       });
@@ -120,7 +127,7 @@ export const usePayments = () => {
     }
   };
 
-  const updatePayment = (id: string, updatedData: Partial<Payment>) => {
+  const updatePayment = async (id: string, updatedData: Partial<Payment>) => {
     try {
       // Encontrar el pago existente
       const existingPayment = payments.find(p => p.id === id);
@@ -141,7 +148,7 @@ export const usePayments = () => {
       };
       
       // Actualizar en el servicio
-      updatePaymentService(servicePayment as any);
+      await updatePaymentService(servicePayment as any);
       
       // Actualizar el estado local
       setPayments(prev => 
@@ -155,10 +162,10 @@ export const usePayments = () => {
     }
   };
 
-  const deletePayment = (id: string) => {
+  const deletePayment = async (id: string) => {
     try {
       // Eliminar del servicio
-      deletePaymentService(id);
+      await deletePaymentService(id, user?.id);
       
       // Actualizar el estado local
       setPayments(prev => prev.filter(payment => payment.id !== id));
@@ -168,7 +175,7 @@ export const usePayments = () => {
     }
   };
 
-  const markPaymentAsPaid = (id: string, cardLastFour?: string) => {
+  const markPaymentAsPaid = async (id: string, cardLastFour?: string) => {
     try {
       // Encontrar el pago
       const payment = payments.find(p => p.id === id);
@@ -177,7 +184,7 @@ export const usePayments = () => {
       }
       
       // Cambiar el estado en el servicio
-      const servicePayment = togglePaymentStatus(id);
+      const servicePayment = await togglePaymentStatus(id, user?.id);
       
       // Actualizar el estado local con lógica adicional para la próxima fecha
       setPayments(prev => 

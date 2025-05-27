@@ -2,12 +2,22 @@ import { createContext, useContext, useState, useEffect, ReactNode } from 'react
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import { syncPaymentsWithUser } from '@/services/PaymentService';
+import { 
+  createUserWithEmailAndPassword, 
+  signInWithEmailAndPassword, 
+  signOut, 
+  onAuthStateChanged,
+  updateProfile,
+  User as FirebaseUser
+} from 'firebase/auth';
+import { auth } from '@/lib/firebase';
 
 // Definir el tipo de usuario
 export interface User {
   id: string;
-  email: string;
-  name: string;
+  email: string | null;
+  name: string | null;
+  photoURL?: string | null;
 }
 
 // Definir la interfaz del contexto
@@ -42,98 +52,110 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
-  // Verificar si hay un usuario almacenado al cargar
+  // Escuchar cambios en el estado de autenticación de Firebase
   useEffect(() => {
-    const storedUser = localStorage.getItem('user');
-    if (storedUser) {
-      try {
-        setUser(JSON.parse(storedUser));
-      } catch (error) {
-        console.error('Error al parsear el usuario almacenado:', error);
-        localStorage.removeItem('user');
+    const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
+      if (firebaseUser) {
+        // Usuario autenticado
+        const userData: User = {
+          id: firebaseUser.uid,
+          email: firebaseUser.email,
+          name: firebaseUser.displayName,
+          photoURL: firebaseUser.photoURL
+        };
+        setUser(userData);
+      } else {
+        // Usuario no autenticado
+        setUser(null);
       }
-    }
-    setLoading(false);
+      setLoading(false);
+    });
+
+    // Limpiar el listener cuando el componente se desmonte
+    return () => unsubscribe();
   }, []);
 
-  // Función para iniciar sesión
+  // Función para iniciar sesión con Firebase
   const login = async (email: string, password: string): Promise<boolean> => {
     try {
       setLoading(true);
       
-      // Simulación de llamada a API - En un entorno real, esto sería una llamada a un backend
-      // Esperar 1 segundo para simular la llamada
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      // Iniciar sesión con Firebase Authentication
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      const firebaseUser = userCredential.user;
       
-      // Verificar credenciales (simulado)
-      if (email === 'demo@example.com' && password === 'password') {
-        const userData: User = {
-          id: '1',
-          email: 'demo@example.com',
-          name: 'Usuario Demo',
-        };
-        
-        // Guardar usuario en localStorage
-        localStorage.setItem('user', JSON.stringify(userData));
-        setUser(userData);
-        
-        // Sincronizar pagos con el usuario
-        syncPaymentsWithUser(userData.id);
-        
-        toast.success('Inicio de sesión exitoso');
-        return true;
-      } else {
-        toast.error('Credenciales incorrectas');
-        return false;
-      }
-    } catch (error) {
+      // Sincronizar pagos con el usuario
+      syncPaymentsWithUser(firebaseUser.uid);
+      
+      toast.success('Inicio de sesión exitoso');
+      return true;
+    } catch (error: any) {
       console.error('Error al iniciar sesión:', error);
-      toast.error('Error al iniciar sesión');
+      
+      // Mostrar mensajes de error específicos
+      if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password') {
+        toast.error('Credenciales incorrectas');
+      } else if (error.code === 'auth/too-many-requests') {
+        toast.error('Demasiados intentos fallidos. Intenta más tarde');
+      } else {
+        toast.error('Error al iniciar sesión');
+      }
+      
       return false;
     } finally {
       setLoading(false);
     }
   };
 
-  // Función para registrar un nuevo usuario
+  // Función para registrar un nuevo usuario con Firebase
   const register = async (name: string, email: string, password: string): Promise<boolean> => {
     try {
       setLoading(true);
       
-      // Simulación de llamada a API
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      // Crear usuario en Firebase Authentication
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      const firebaseUser = userCredential.user;
       
-      // En un entorno real, aquí se enviarían los datos al backend
-      const userData: User = {
-        id: Date.now().toString(), // Generar un ID único
-        email,
-        name,
-      };
-      
-      // Guardar usuario en localStorage
-      localStorage.setItem('user', JSON.stringify(userData));
-      setUser(userData);
+      // Actualizar el perfil del usuario con su nombre
+      await updateProfile(firebaseUser, {
+        displayName: name
+      });
       
       // Sincronizar pagos con el usuario
-      syncPaymentsWithUser(userData.id);
+      syncPaymentsWithUser(firebaseUser.uid);
       
       toast.success('Registro exitoso');
       return true;
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error al registrar:', error);
-      toast.error('Error al registrar usuario');
+      
+      // Mostrar mensajes de error específicos
+      if (error.code === 'auth/email-already-in-use') {
+        toast.error('El correo electrónico ya está en uso');
+      } else if (error.code === 'auth/weak-password') {
+        toast.error('La contraseña es demasiado débil');
+      } else if (error.code === 'auth/invalid-email') {
+        toast.error('Correo electrónico inválido');
+      } else {
+        toast.error('Error al registrar usuario');
+      }
+      
       return false;
     } finally {
       setLoading(false);
     }
   };
 
-  // Función para cerrar sesión
-  const logout = () => {
-    localStorage.removeItem('user');
-    setUser(null);
-    navigate('/login');
-    toast.success('Sesión cerrada');
+  // Función para cerrar sesión con Firebase
+  const logout = async () => {
+    try {
+      await signOut(auth);
+      navigate('/login');
+      toast.success('Sesión cerrada');
+    } catch (error) {
+      console.error('Error al cerrar sesión:', error);
+      toast.error('Error al cerrar sesión');
+    }
   };
 
   const value = {
