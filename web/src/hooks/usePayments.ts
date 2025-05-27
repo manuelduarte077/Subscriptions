@@ -67,6 +67,7 @@ export const usePayments = () => {
               amount: oldPayment.amount,
               dueDate: oldPayment.nextDueDate,
               category: oldPayment.category || 'other',
+              provider: oldPayment.provider || '', // Incluir el proveedor
               description: oldPayment.description || '',
               isPaid: !oldPayment.isActive,
               userId: user?.id
@@ -96,6 +97,7 @@ export const usePayments = () => {
         amount: paymentData.amount,
         dueDate: paymentData.nextDueDate.toISOString(),
         category: paymentData.category,
+        provider: paymentData.provider, // Incluir el proveedor
         description: paymentData.description || '',
         isPaid: false,
       };

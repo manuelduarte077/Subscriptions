@@ -26,7 +26,7 @@ const PaymentList = () => {
   const filteredPayments = payments
     .filter(payment => {
       const matchesSearch = payment.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                           payment.provider.toLowerCase().includes(searchTerm.toLowerCase());
+                           (payment.provider ? payment.provider.toLowerCase().includes(searchTerm.toLowerCase()) : false);
       const matchesCategory = categoryFilter === 'all' || payment.category === categoryFilter;
       const matchesStatus = showInactive || payment.isActive;
       return matchesSearch && matchesCategory && matchesStatus;
@@ -178,7 +178,7 @@ const PaymentList = () => {
                       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
                         <div>
                           <span className="text-muted-foreground">Proveedor:</span>
-                          <p className="font-medium">{payment.provider}</p>
+                          <p className="font-medium">{payment.provider || 'No especificado'}</p>
                         </div>
                         <div>
                           <span className="text-muted-foreground">Frecuencia:</span>

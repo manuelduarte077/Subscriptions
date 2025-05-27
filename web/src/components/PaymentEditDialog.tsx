@@ -82,7 +82,7 @@ const PaymentEditDialog = ({ payment, open, onOpenChange }: PaymentEditDialogPro
           <div className="grid grid-cols-2 gap-4 p-4 bg-muted rounded-lg">
             <div>
               <Label className="text-sm text-muted-foreground">Proveedor</Label>
-              <p className="font-medium">{payment.provider}</p>
+              <p className="font-medium">{payment.provider || 'No especificado'}</p>
             </div>
             <div>
               <Label className="text-sm text-muted-foreground">Monto</Label>
