@@ -8,6 +8,7 @@ const STORAGE_KEY = 'payment-reminders';
 
 export const usePayments = () => {
   const [payments, setPayments] = useState<Payment[]>([]);
+  const [refreshKey, setRefreshKey] = useState(0);
   const { user } = useAuth();
 
   // Cargar pagos del servicio
@@ -49,7 +50,7 @@ export const usePayments = () => {
     };
     
     loadPayments();
-  }, [user?.id]);
+  }, [user?.id, refreshKey]);
   
   // Función para migrar datos del antiguo formato al nuevo
   const migrateOldData = async () => {
@@ -360,9 +361,15 @@ export const usePayments = () => {
     }
   };
 
+  // Función para forzar la recarga de pagos
+  const refreshPayments = () => {
+    setRefreshKey(prev => prev + 1);
+  };
+
   return {
     payments,
     addPayment,
+    refreshPayments,
     updatePayment,
     deletePayment,
     markPaymentAsPaid,

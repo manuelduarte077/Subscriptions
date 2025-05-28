@@ -24,7 +24,7 @@ interface PaymentEditDialogProps {
 }
 
 const PaymentEditDialog = ({ payment, open, onOpenChange }: PaymentEditDialogProps) => {
-  const { markPaymentAsPaid, cancelPayment, resumePayment, updatePayment } = usePayments();
+  const { markPaymentAsPaid, cancelPayment, resumePayment, updatePayment, refreshPayments } = usePayments();
   const [cardLastFour, setCardLastFour] = useState('');
   const [paymentDate, setPaymentDate] = useState<Date>(new Date());
   const [resumeDate, setResumeDate] = useState<Date>(new Date());

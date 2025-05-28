@@ -21,7 +21,7 @@ interface PaymentFormProps {
 }
 
 const PaymentForm = ({ onSuccess }: PaymentFormProps) => {
-  const { addPayment } = usePayments();
+  const { addPayment, refreshPayments } = usePayments();
   const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState<PaymentFormData>({
     name: '',
@@ -98,7 +98,10 @@ const PaymentForm = ({ onSuccess }: PaymentFormProps) => {
     setIsLoading(true);
     
     try {
-      addPayment(formData);
+      await addPayment(formData);
+      
+      // Forzar actualización de datos
+      refreshPayments();
       
       toast({
         title: "¡Pago agregado!",

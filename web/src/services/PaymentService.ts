@@ -121,6 +121,8 @@ export const savePayment = async (payment: Omit<Payment, 'id'>, userId?: string)
       ...payment,
       userId,
       createdAt: serverTimestamp(),
+      // Asegurar que isActive sea siempre true para nuevos pagos
+      isActive: true
     };
     
     const docRef = await addDoc(paymentsRef, paymentData);
@@ -129,6 +131,13 @@ export const savePayment = async (payment: Omit<Payment, 'id'>, userId?: string)
       ...paymentData,
       id: docRef.id,
       createdAt: new Date(),
+      // Asegurar que las fechas sean del tipo correcto
+      startDate: payment.startDate,
+      dueDate: payment.dueDate,
+      nextDueDate: payment.nextDueDate,
+      // Asegurar que isActive sea true para nuevos pagos
+      isActive: true,
+      isPaid: payment.isPaid || false
     };
     
     toast.success('Pago guardado correctamente');
