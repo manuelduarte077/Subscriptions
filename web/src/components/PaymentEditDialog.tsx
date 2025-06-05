@@ -125,7 +125,7 @@ const PaymentEditDialog = ({ payment, open, onOpenChange }: PaymentEditDialogPro
                 value={cardLastFour}
                 onChange={(e) => setCardLastFour(e.target.value.slice(0, 4))}
                 maxLength={4}
-                className="max-w-24"
+                className="w-24"
               />
               {payment.cardLastFour && (
                 <Badge variant="outline">
