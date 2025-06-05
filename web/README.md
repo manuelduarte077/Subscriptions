@@ -6,22 +6,11 @@
 
 ## How can I edit this code?
 
-There are several ways of editing your application.
+The recommended way to edit this project is by setting it up locally. Follow these steps:
 
-**Use Lovable**
+### Local Development
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/e4f445e5-82c5-4f11-bcfd-14765bd1d356) and start prompting.
-
-Changes made via Lovable will be committed automatically to this repo.
-
-**Use your preferred IDE**
-
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
-
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
-
-Follow these steps:
-
+To work on this project locally, ensure you have Node.js and npm installed. You can [install them with nvm](https://github.com/nvm-sh/nvm#installing-and-updating).
 ```sh
 # Step 1: Clone the repository using the project's Git URL.
 git clone <YOUR_GIT_URL>
