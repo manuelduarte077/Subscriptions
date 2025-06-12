@@ -6,8 +6,6 @@ import androidx.compose.animation.shrinkHorizontally
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.Icon
@@ -34,6 +32,11 @@ import dev.donmanuel.monthlybill.app.navigation.tabs.addCalendarScreen
 import dev.donmanuel.monthlybill.app.navigation.tabs.addCategoryScreen
 import dev.donmanuel.monthlybill.app.navigation.tabs.addHomeScreen
 import kotlinx.coroutines.launch
+import monthlybill.composeapp.generated.resources.Res
+import monthlybill.composeapp.generated.resources.add_circle
+import monthlybill.composeapp.generated.resources.home
+import monthlybill.composeapp.generated.resources.settings
+import org.jetbrains.compose.resources.painterResource
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -70,7 +73,10 @@ fun RootNavigationGraph(
                     },
                     modifier = Modifier.padding(16.dp)
                 ) {
-                    Icon(Icons.Default.Add, contentDescription = "Add")
+                    Icon(
+                        painterResource(Res.drawable.add_circle),
+                        contentDescription = "Add"
+                    )
                     Spacer(modifier = Modifier.size(8.dp))
                     Text(
                         "Create",
