@@ -1,5 +1,6 @@
 package dev.donmanuel.monthlybill.app.features.home
 
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -39,6 +40,7 @@ import kotlinx.datetime.daysUntil
 import kotlinx.datetime.toLocalDateTime
 import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
+import androidx.compose.runtime.remember
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalTime::class)
 @Composable
@@ -48,15 +50,33 @@ fun HomeScreen(navController: NavController) {
     var skipPartiallyExpanded by rememberSaveable { mutableStateOf(false) }
     val bottomSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = skipPartiallyExpanded)
 
-    // Obtener las suscripciones
     val getAllSubscriptionsUseCase = koinInject<GetAllSubscriptionsUseCase>()
     val subscriptions by getAllSubscriptionsUseCase().collectAsStateWithLifecycle(initialValue = emptyList())
 
-    // Obtener categorías para íconos
     val categoriesViewModel = koinViewModel<CategoriesViewModel>()
     val categories by categoriesViewModel.getAllCategories().collectAsStateWithLifecycle(initialValue = emptyList())
 
     val today = Clock.System.now().toLocalDateTime(kotlinx.datetime.TimeZone.currentSystemDefault()).date
+
+    // Obtener todas las monedas disponibles en las suscripciones
+    val availableCurrencies = subscriptions.orEmpty().map { it.currency }.distinct().filter { it.isNotBlank() }
+    var selectedCurrency by rememberSaveable { mutableStateOf("") }
+    // Seleccionar automáticamente la primera moneda disponible si no hay selección
+    if (selectedCurrency.isBlank() && availableCurrencies.isNotEmpty()) {
+        selectedCurrency = availableCurrencies.first()
+    }
+
+    // Filtrar suscripciones por moneda seleccionada
+    val filteredSubscriptions = subscriptions.orEmpty().filter { it.currency == selectedCurrency }
+    val total = filteredSubscriptions.sumOf { it.price }
+    val maxPayment = filteredSubscriptions.maxByOrNull { it.price }
+    val monthlyTotal = filteredSubscriptions.filter { it.billingCycle.lowercase() == "mensual" || it.billingCycle.lowercase() == "monthly" }.sumOf { it.price }
+    val annualTotal = filteredSubscriptions.filter { it.billingCycle.lowercase() == "anual" || it.billingCycle.lowercase() == "anual" || it.billingCycle.lowercase() == "yearly" }.sumOf { it.price }
+
+    fun formatAmount(amount: Double): String =
+        ((amount * 100.0).toInt() / 100.0).toString().let {
+            if (it.contains(".")) it.padEnd(it.indexOf(".") + 3, '0') else it + ".00"
+        }
 
     Scaffold(
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
@@ -93,6 +113,54 @@ fun HomeScreen(navController: NavController) {
                 modifier = Modifier.padding(horizontal = 16.dp)
                     .padding(top = 16.dp)
             )
+            Spacer(modifier = Modifier.size(8.dp))
+            // Selector de moneda
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp, vertical = 4.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text("Moneda:", style = MaterialTheme.typography.bodyMedium)
+                Spacer(modifier = Modifier.size(8.dp))
+                var expanded by remember { mutableStateOf(false) }
+                Box {
+                    Button(onClick = { expanded = true }) {
+                        Text(selectedCurrency.ifBlank { "Seleccionar" })
+                    }
+                    DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
+                        availableCurrencies.forEach { currency ->
+                            DropdownMenuItem(
+                                text = { Text(currency) },
+                                onClick = {
+                                    selectedCurrency = currency
+                                    expanded = false
+                                }
+                            )
+                        }
+                    }
+                }
+            }
+            Spacer(modifier = Modifier.size(8.dp))
+            // Resumen tipo reporte
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp, vertical = 4.dp),
+                colors = CardDefaults.cardColors(containerColor = Color(0xFFE3F2FD)),
+                elevation = CardDefaults.cardElevation(2.dp)
+            ) {
+                Column(modifier = Modifier.padding(16.dp)) {
+                    Text("Reporte de suscripciones", style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.primary)
+                    Spacer(modifier = Modifier.size(4.dp))
+                    Text("Total mensual: ${formatAmount(monthlyTotal)} $selectedCurrency", style = MaterialTheme.typography.bodyMedium)
+                    Text("Total anual: ${formatAmount(annualTotal)} $selectedCurrency", style = MaterialTheme.typography.bodyMedium)
+                    Text("Total general: ${formatAmount(total)} $selectedCurrency", style = MaterialTheme.typography.bodyMedium)
+                    if (maxPayment != null) {
+                        Text("Pago más alto: ${maxPayment.name} (${formatAmount(maxPayment.price)} $selectedCurrency)", style = MaterialTheme.typography.bodyMedium)
+                    }
+                }
+            }
             Spacer(modifier = Modifier.size(8.dp))
             LazyColumn(modifier = Modifier.padding(horizontal = 16.dp)) {
                 items(subscriptions.orEmpty()) { subscription: Subscription ->
