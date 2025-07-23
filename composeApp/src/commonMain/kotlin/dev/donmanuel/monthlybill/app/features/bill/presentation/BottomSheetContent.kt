@@ -38,7 +38,7 @@ fun BottomSheetContent(
     val coroutineScope = remember { CoroutineScope(Dispatchers.Main) }
 
     // Currency
-    val currencies = listOf("USD", "EUR", "MXN", "COP", "ARS", "BRL")
+    val currencies = listOf("USD", "NIO", "EUR", "MXN", "COP", "ARS", "BRL")
     var selectedCurrency by remember { mutableStateOf(currencies.first()) }
     var currencyExpanded by remember { mutableStateOf(false) }
 
@@ -52,6 +52,12 @@ fun BottomSheetContent(
     val categories by categoriesViewModel.getAllCategories().collectAsStateWithLifecycle(initialValue = emptyList())
     var selectedCategory by remember { mutableStateOf(categories?.firstOrNull()?.name ?: "General") }
     var categoryExpanded by remember { mutableStateOf(false) }
+
+    LaunchedEffect(categories) {
+        if (selectedCategory.isBlank() && categories?.isNotEmpty() == true) {
+            selectedCategory = categories?.first()?.name ?: "General"
+        }
+    }
 
     // Dates
     val today = Clock.System.now().toLocalDateTime(kotlinx.datetime.TimeZone.currentSystemDefault()).date
@@ -211,7 +217,7 @@ fun BottomSheetContent(
         if (showError) {
             Text(
                 text = "Por favor ingresa un monto válido.",
-                color = androidx.compose.material3.MaterialTheme.colorScheme.error,
+                color = MaterialTheme.colorScheme.error,
                 style = TextStyle(fontSize = 14.sp)
             )
         }
