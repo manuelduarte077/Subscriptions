@@ -6,36 +6,18 @@ import androidx.compose.animation.shrinkHorizontally
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ExtendedFloatingActionButton
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.ModalBottomSheet
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.material3.rememberModalBottomSheetState
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import dev.donmanuel.monthlybill.app.features.bill.presentation.ModalBottomSheetContent
-import dev.donmanuel.monthlybill.app.navigation.tabs.BottomNavScreen
-import dev.donmanuel.monthlybill.app.navigation.tabs.BottomNavigationBarContent
-import dev.donmanuel.monthlybill.app.navigation.tabs.addBillDetailsScreen
-import dev.donmanuel.monthlybill.app.navigation.tabs.addCalendarScreen
-import dev.donmanuel.monthlybill.app.navigation.tabs.addCategoryScreen
-import dev.donmanuel.monthlybill.app.navigation.tabs.addHomeScreen
+import dev.donmanuel.monthlybill.app.navigation.tabs.*
 import kotlinx.coroutines.launch
 import monthlybill.composeapp.generated.resources.Res
 import monthlybill.composeapp.generated.resources.add_circle
-import monthlybill.composeapp.generated.resources.home
-import monthlybill.composeapp.generated.resources.settings
+import monthlybill.composeapp.generated.resources.ic_add
 import org.jetbrains.compose.resources.painterResource
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -74,8 +56,9 @@ fun RootNavigationGraph(
                     modifier = Modifier.padding(16.dp)
                 ) {
                     Icon(
-                        painterResource(Res.drawable.add_circle),
-                        contentDescription = "Add"
+                        painterResource(Res.drawable.ic_add),
+                        contentDescription = "Add",
+                        modifier = Modifier.size(28.dp)
                     )
                     Spacer(modifier = Modifier.size(8.dp))
                     Text(

@@ -16,8 +16,7 @@ import dev.donmanuel.monthlybill.app.features.settings.presentation.SettingsScre
 import dev.donmanuel.monthlybill.app.theme.FontSize
 import dev.donmanuel.monthlybill.app.theme.redHatBoldFont
 import monthlybill.composeapp.generated.resources.Res
-import monthlybill.composeapp.generated.resources.compose_multiplatform
-import monthlybill.composeapp.generated.resources.home
+import monthlybill.composeapp.generated.resources.ic_settings
 import org.jetbrains.compose.resources.painterResource
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -48,7 +47,7 @@ fun HomeScreen(
                 },
                 actions = {
                     Icon(
-                        painterResource(Res.drawable.compose_multiplatform),
+                        painterResource(Res.drawable.ic_settings),
                         contentDescription = "Settings",
                         tint = MaterialTheme.colorScheme.primary,
                         modifier = Modifier
@@ -74,7 +73,7 @@ fun HomeScreen(
 
         if (showBottomSheet) {
             ModalBottomSheet(
-                modifier = Modifier.wrapContentHeight(), // Adjust height as needed
+                modifier = Modifier.wrapContentHeight(),
                 onDismissRequest = { showBottomSheet = false },
                 sheetState = sheetState,
             ) {
