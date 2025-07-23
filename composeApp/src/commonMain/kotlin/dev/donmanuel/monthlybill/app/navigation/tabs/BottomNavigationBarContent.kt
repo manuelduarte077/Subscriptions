@@ -1,5 +1,6 @@
 package dev.donmanuel.monthlybill.app.navigation.tabs
 
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
@@ -11,6 +12,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import dev.donmanuel.monthlybill.app.theme.FontSize
 import dev.donmanuel.monthlybill.app.theme.redHatBoldFont
@@ -62,6 +64,8 @@ fun BottomNavigationBarContent(
                         Icon(
                             painter = painterResource(item.icon),
                             contentDescription = "${item.title} icon",
+                            modifier = Modifier
+                                .size(24.dp)
                         )
                     },
                     label = {

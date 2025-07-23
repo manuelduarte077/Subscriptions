@@ -8,6 +8,9 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.dp
@@ -21,16 +24,14 @@ import org.jetbrains.compose.resources.painterResource
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeScreen(
-    navController: NavController,
-) {
+fun HomeScreen(navController: NavController) {
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
 
     /// Show Modal Bottom Sheet
-    val sheetState = rememberModalBottomSheetState(
-        skipPartiallyExpanded = false,
-    )
-    var showBottomSheet by remember { mutableStateOf(false) }
+    var openBottomSheet by rememberSaveable { mutableStateOf(false) }
+    var skipPartiallyExpanded by rememberSaveable { mutableStateOf(false) }
+    val bottomSheetState =
+        rememberModalBottomSheetState(skipPartiallyExpanded = skipPartiallyExpanded)
 
     Scaffold(
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
@@ -53,7 +54,7 @@ fun HomeScreen(
                         modifier = Modifier
                             .size(32.dp)
                             .clickable(
-                                onClick = { showBottomSheet = true },
+                                onClick = { openBottomSheet = true },
                                 indication = LocalIndication.current,
                                 interactionSource = remember { MutableInteractionSource() }
                             )
@@ -71,11 +72,11 @@ fun HomeScreen(
                 .padding(16.dp)
         )
 
-        if (showBottomSheet) {
+        if (openBottomSheet) {
             ModalBottomSheet(
                 modifier = Modifier.wrapContentHeight(),
-                onDismissRequest = { showBottomSheet = false },
-                sheetState = sheetState,
+                onDismissRequest = { openBottomSheet = false },
+                sheetState = bottomSheetState,
             ) {
                 SettingsScreen()
             }
