@@ -64,6 +64,9 @@ kotlin {
             // Room
             implementation(libs.room.runtime)
             implementation(libs.sqlite.bundled)
+
+            // DateTime
+            implementation(libs.datetime)
         }
         desktopMain.dependencies {
             implementation(compose.desktop.currentOs)
