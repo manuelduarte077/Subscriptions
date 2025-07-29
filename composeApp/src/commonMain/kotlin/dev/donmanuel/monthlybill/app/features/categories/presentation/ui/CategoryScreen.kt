@@ -17,6 +17,8 @@ import dev.donmanuel.monthlybill.app.features.categories.presentation.viewmodel.
 import dev.donmanuel.monthlybill.app.theme.FontSize
 import dev.donmanuel.monthlybill.app.theme.redHatBoldFont
 import org.koin.compose.viewmodel.koinViewModel
+import androidx.compose.ui.unit.dp
+import androidx.compose.foundation.layout.PaddingValues
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -35,24 +37,25 @@ fun CategoryScreen(
     Scaffold(
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
-            TopAppBar(
+            MediumTopAppBar(
                 title = {
                     Text(
                         text = "Categories",
                         fontFamily = redHatBoldFont(),
-                        fontSize = FontSize.LARGE,
+                        fontSize = FontSize.EXTRA_MEDIUM,
                     )
                 },
                 scrollBehavior = scrollBehavior,
+                windowInsets = TopAppBarDefaults.windowInsets,
             )
         },
-        contentWindowInsets = ScaffoldDefaults.contentWindowInsets,
     ) { innerPadding ->
         LazyVerticalGrid(
-            modifier = modifier.padding(paddingValues = innerPadding),
+            modifier = Modifier.padding(top = innerPadding.calculateTopPadding()),
             columns = GridCells.Fixed(2),
-            horizontalArrangement = Arrangement.SpaceEvenly,
-            verticalArrangement = Arrangement.SpaceEvenly,
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+            contentPadding = PaddingValues(16.dp)
         ) {
             itemsIndexed(items = categories.orEmpty()) { _, item ->
                 CategoryItem(

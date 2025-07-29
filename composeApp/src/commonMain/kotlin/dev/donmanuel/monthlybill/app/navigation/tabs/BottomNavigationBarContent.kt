@@ -65,14 +65,14 @@ fun BottomNavigationBarContent(
                             painter = painterResource(item.icon),
                             contentDescription = "${item.title} icon",
                             modifier = Modifier
-                                .size(24.dp)
+                                .size(22.dp)
                         )
                     },
                     label = {
                         Text(
                             item.title,
                             fontFamily = redHatBoldFont(),
-                            fontSize = FontSize.REGULAR,
+                            fontSize = FontSize.SMALL,
                         )
                     },
                     selected = selectedItem == index,
