@@ -49,16 +49,15 @@ fun RootNavigationGraph(
                 enter = expandHorizontally(),
                 exit = shrinkHorizontally(),
             ) {
-                FloatingActionButton(
+                ExtendedFloatingActionButton(
                     onClick = {
                         openBottomSheet = true
                     },
-                    modifier = Modifier.padding(16.dp)
                 ) {
                     Icon(
                         painterResource(Res.drawable.ic_add),
                         contentDescription = "Add",
-                        modifier = Modifier.size(28.dp)
+                        modifier = Modifier.size(24.dp)
                     )
                     Spacer(modifier = Modifier.size(8.dp))
                     Text(

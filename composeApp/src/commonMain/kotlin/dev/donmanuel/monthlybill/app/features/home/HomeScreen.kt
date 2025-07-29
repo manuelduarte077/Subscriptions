@@ -15,7 +15,6 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import dev.donmanuel.monthlybill.app.features.bill.domain.usecase.GetAllSubscriptionsUseCase
-import dev.donmanuel.monthlybill.app.features.categories.presentation.viewmodel.CategoriesViewModel
 import dev.donmanuel.monthlybill.app.features.home.components.SubscriptionItem
 import dev.donmanuel.monthlybill.app.features.settings.presentation.SettingsScreen
 import dev.donmanuel.monthlybill.app.theme.FontSize
@@ -25,7 +24,6 @@ import monthlybill.composeapp.generated.resources.Res
 import monthlybill.composeapp.generated.resources.ic_settings
 import org.jetbrains.compose.resources.painterResource
 import org.koin.compose.koinInject
-import org.koin.compose.viewmodel.koinViewModel
 import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
 
@@ -39,9 +37,6 @@ fun HomeScreen(navController: NavController) {
 
     val getAllSubscriptionsUseCase = koinInject<GetAllSubscriptionsUseCase>()
     val subscriptions by getAllSubscriptionsUseCase().collectAsStateWithLifecycle(initialValue = emptyList())
-
-    val categoriesViewModel = koinViewModel<CategoriesViewModel>()
-    val categories by categoriesViewModel.getAllCategories().collectAsStateWithLifecycle(initialValue = emptyList())
 
     val today = Clock.System.now().toLocalDateTime(kotlinx.datetime.TimeZone.currentSystemDefault()).date
 
@@ -83,7 +78,6 @@ fun HomeScreen(navController: NavController) {
                 items(subscriptions.orEmpty()) { subscription ->
                     SubscriptionItem(
                         subscription = subscription,
-                        category = categories,
                         today = today
                     )
                 }
