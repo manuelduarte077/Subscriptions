@@ -38,9 +38,7 @@ fun CategoryScreen(
     modifier: Modifier = Modifier,
 ) {
     val viewModel = koinViewModel<CategoriesViewModel>()
-    val categories by viewModel.getAllCategories()
-        .collectAsStateWithLifecycle(initialValue = emptyList())
-
+    val categories by viewModel.getAllCategories().collectAsStateWithLifecycle(initialValue = emptyList())
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
 
     // Show modal bottom sheet
@@ -65,17 +63,19 @@ fun CategoryScreen(
         contentWindowInsets = ScaffoldDefaults.contentWindowInsets,
     ) { innerPadding ->
         LazyVerticalGrid(
-            modifier = modifier.padding(innerPadding),
+            modifier = modifier.padding(paddingValues = innerPadding),
             columns = GridCells.Fixed(2),
             horizontalArrangement = Arrangement.SpaceEvenly,
             verticalArrangement = Arrangement.SpaceEvenly,
         ) {
-            itemsIndexed(items = categories.orEmpty()) { index, item ->
+            itemsIndexed(items = categories.orEmpty()) { _, item ->
                 CategoryItem(
-                    category = item, showBottomSheet = {
+                    category = item,
+                    showBottomSheet = {
                         selectedCategory = item
                         showBottomSheet = true
-                    })
+                    }
+                )
             }
         }
 

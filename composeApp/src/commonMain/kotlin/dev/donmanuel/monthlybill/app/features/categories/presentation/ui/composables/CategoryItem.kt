@@ -25,9 +25,8 @@ import org.jetbrains.compose.resources.painterResource
 @Composable
 fun CategoryItem(
     category: Category,
-    showBottomSheet: () -> Unit = {},
-
-    ) {
+    showBottomSheet: () -> Unit = {}
+) {
     Card(
         modifier = Modifier.fillMaxWidth().padding(8.dp),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondary),

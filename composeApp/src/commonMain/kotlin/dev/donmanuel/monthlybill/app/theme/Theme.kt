@@ -83,14 +83,11 @@ private val darkScheme = darkColorScheme(
 )
 
 @Composable
-fun MonthlyBillTheme(
-    darkTheme: Boolean = isSystemInDarkTheme(),
-    dynamicColor: Boolean = true,
-    content: @Composable() () -> Unit
-) {
-    val colorScheme = when {
+fun MonthlyBillTheme(content: @Composable () -> Unit) {
+    val isDarkTheme = isSystemInDarkTheme()
 
-        darkTheme -> darkScheme
+    val colorScheme = when {
+        isDarkTheme -> darkScheme
         else -> lightScheme
     }
 

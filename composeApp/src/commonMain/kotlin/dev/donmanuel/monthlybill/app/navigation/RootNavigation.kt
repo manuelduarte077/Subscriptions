@@ -26,7 +26,6 @@ fun RootNavigationGraph(
     navController: NavHostController,
     modifier: Modifier = Modifier,
 ) {
-    // Bottom Sheet
     var openBottomSheet by rememberSaveable { mutableStateOf(false) }
     var skipPartiallyExpanded by rememberSaveable { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
@@ -50,7 +49,7 @@ fun RootNavigationGraph(
                 enter = expandHorizontally(),
                 exit = shrinkHorizontally(),
             ) {
-                ExtendedFloatingActionButton(
+                FloatingActionButton(
                     onClick = {
                         openBottomSheet = true
                     },

@@ -1,14 +1,20 @@
-This is a Kotlin Multiplatform project targeting Android, iOS, Desktop.
+## Control de suscripciones
 
-* `/composeApp` is for code that will be shared across your Compose Multiplatform applications.
-  It contains several subfolders:
-  - `commonMain` is for code that’s common for all targets.
-  - Other folders are for Kotlin code that will be compiled for only the platform indicated in the folder name.
-    For example, if you want to use Apple’s CoreCrypto for the iOS part of your Kotlin app,
-    `iosMain` would be the right folder for such calls.
+Aplicacion usando compose multiplaform, para registrar las subscripciones que tengo activas, y que me ayuden a recordar cuantas dias me faltan para que expire la suscripcion, controlando los costos de las suscripciones, mostrar los costos totales de las suscripciones. Para que pueda controlar mis gastos mensuales.
 
-* `/iosApp` contains iOS applications. Even if you’re sharing your UI with Compose Multiplatform, 
-  you need this entry point for your iOS app. This is also where you should add SwiftUI code for your project.
+# Features
+
+- Registro de suscripciones
+- Recordatorio de expiracion de suscripciones
+- Control de costos de suscripciones
+- Mostrar costos totales de suscripciones
+- Mostrar graficos de costos de suscripciones
+- Exportar datos de suscripciones
 
 
-Learn more about [Kotlin Multiplatform](https://www.jetbrains.com/help/kotlin-multiplatform-dev/get-started.html)…
+Te gustaría que agregue alguna de estas mejoras?
+Acciones rápidas: Botones para editar o eliminar cada suscripción.
+Visualización: Mostrar íconos de categoría, colores o resaltar suscripciones próximas a vencer.
+Resumen: Mostrar el total mensual/gasto al inicio de la pantalla.
+Filtrado/búsqueda: Permitir buscar o filtrar por categoría, estado, etc.
+Animaciones o feedback visual: Al agregar/eliminar.
