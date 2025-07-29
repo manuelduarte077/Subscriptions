@@ -1,0 +1,304 @@
+{
+  "categories": [
+    {
+      "id": 1,
+      "name": "Netflix",
+      "icon": "netflix",
+      "plans": [
+        {
+          "name": "Basic",
+          "price": "8.99"
+        },
+        {
+          "name": "Standard",
+          "price": "15.49"
+        },
+        {
+          "name": "Premium",
+          "price": "19.99"
+        }
+      ],
+      "description": "Netflix is a streaming service that offers a wide variety of award-winning TV shows, movies, anime, documentaries, and more on thousands of internet-connected devices."
+    },
+    {
+      "id": 2,
+      "name": "Disney+",
+      "icon": "disneyplus",
+      "plans": [
+        {
+          "name": "Basic",
+          "price": "7.99"
+        },
+        {
+          "name": "Standard",
+          "price": "10.99"
+        },
+        {
+          "name": "Premium",
+          "price": "13.99"
+        }
+      ],
+      "description": "Disney+ is the streaming home of Disney, Pixar, Marvel, Star Wars, and National Geographic. Stream the best movies, shows, and documentaries from Disney and more."
+    },
+    {
+      "id": 3,
+      "name": "HBO",
+      "icon": "hbo",
+      "plans": [
+        {
+          "name": "Basic",
+          "price": "14.99"
+        },
+        {
+          "name": "Standard",
+          "price": "19.99"
+        },
+        {
+          "name": "Premium",
+          "price": "24.99"
+        }
+      ],
+      "description": "HBO Max is a streaming service that offers a wide variety of movies, shows, and documentaries from HBO and other WarnerMedia brands."
+    },
+    {
+      "id": 4,
+      "name": "Amazon Prime",
+      "icon": "primevideo",
+      "plans": [
+        {
+          "name": "Basic",
+          "price": "8.99"
+        },
+        {
+          "name": "Standard",
+          "price": "12.99"
+        },
+        {
+          "name": "Premium",
+          "price": "15.99"
+        }
+      ],
+      "description": "Amazon Prime Video is a streaming service that offers a wide variety of movies, shows, and documentaries from Amazon and other studios."
+    },
+    {
+      "id": 5,
+      "name": "Duolingo",
+      "icon": "duolingo",
+      "plans": [
+        {
+          "name": "Basic",
+          "price": "6.99"
+        },
+        {
+          "name": "Standard",
+          "price": "12.99"
+        },
+        {
+          "name": "Premium",
+          "price": "19.99"
+        }
+      ],
+      "description": "Duolingo is a language-learning platform that offers courses in various languages through interactive lessons and exercises."
+    },
+    {
+      "id": 6,
+      "name": "Youtube",
+      "icon": "youtube",
+      "plans": [
+        {
+          "name": "Basic",
+          "price": "11.99"
+        },
+        {
+          "name": "Standard",
+          "price": "15.99"
+        },
+        {
+          "name": "Premium",
+          "price": "19.99"
+        }
+      ],
+      "description": "YouTube is a video-sharing platform where users can upload, view, and share videos. It offers a wide variety of content, including music videos, vlogs, tutorials, and more."
+    },
+    {
+      "id": 7,
+      "name": "X",
+      "icon": "x",
+      "plans": [
+        {
+          "name": "Basic",
+          "price": "4.99"
+        },
+        {
+          "name": "Standard",
+          "price": "8.99"
+        },
+        {
+          "name": "Premium",
+          "price": "12.99"
+        }
+      ],
+      "description": "X is a social media platform that allows users to share and discover short-form content, including text, images, and videos. It is known for its real-time updates and trending topics."
+    },
+    {
+      "id": 8,
+      "name": "Twitch",
+      "icon": "twitch",
+      "plans": [
+        {
+          "name": "Basic",
+          "price": "4.99"
+        },
+        {
+          "name": "Standard",
+          "price": "9.99"
+        },
+        {
+          "name": "Premium",
+          "price": "14.99"
+        }
+      ],
+      "description": "Twitch is a live streaming platform primarily focused on video game streaming, but it also includes streams related to music, art, and other creative content."
+    },
+    {
+      "id": 9,
+      "name": "Spotify",
+      "icon": "spotify",
+      "plans": [
+        {
+          "name": "Basic",
+          "price": "9.99"
+        },
+        {
+          "name": "Standard",
+          "price": "14.99"
+        },
+        {
+          "name": "Premium",
+          "price": "19.99"
+        }
+      ],
+      "description": "Spotify is a music streaming service that offers a vast library of songs, albums, and playlists. Users can create and share playlists, discover new music, and listen to podcasts."
+    },
+    {
+      "id": 10,
+      "name": "One Drive",
+      "icon": "onedrive",
+      "plans": [
+        {
+          "name": "Basic",
+          "price": "1.99"
+        },
+        {
+          "name": "Standard",
+          "price": "3.99"
+        },
+        {
+          "name": "Premium",
+          "price": "5.99"
+        }
+      ],
+      "description": "OneDrive is a cloud storage service from Microsoft that allows users to store files and data online securely. It offers seamless integration with Microsoft Office applications."
+    },
+    {
+      "id": 11,
+      "name": "Adobe Creative Cloud",
+      "icon": "adobe",
+      "plans": [
+        {
+          "name": "Basic",
+          "price": "9.99"
+        },
+        {
+          "name": "Standard",
+          "price": "19.99"
+        },
+        {
+          "name": "Premium",
+          "price": "29.99"
+        }
+      ],
+      "description": "Adobe Creative Cloud is a suite of software applications and services for graphic design, video editing, web development, photography, and more."
+    },
+    {
+      "id": 12,
+      "name": "Apple Music",
+      "icon": "applemusic",
+      "plans": [
+        {
+          "name": "Basic",
+          "price": "9.99"
+        },
+        {
+          "name": "Standard",
+          "price": "14.99"
+        },
+        {
+          "name": "Premium",
+          "price": "19.99"
+        }
+      ],
+      "description": "Apple Music is a music streaming service that offers access to millions of songs, curated playlists, and radio stations. It allows users to stream music on-demand and download songs for offline listening."
+    },
+    {
+      "id": 13,
+      "name": "Crunchyroll",
+      "icon": "chycrunchyroll",
+      "plans": [
+        {
+          "name": "Basic",
+          "price": "7.99"
+        },
+        {
+          "name": "Standard",
+          "price": "9.99"
+        },
+        {
+          "name": "Premium",
+          "price": "14.99"
+        }
+      ],
+      "description": "Crunchyroll is a streaming service that specializes in anime, manga, and Asian dramas. It offers a wide variety of content for fans of Japanese pop culture."
+    },
+    {
+      "id": 14,
+      "name": "GitHub",
+      "icon": "github",
+      "plans": [
+        {
+          "name": "Basic",
+          "price": "4.99"
+        },
+        {
+          "name": "Standard",
+          "price": "8.99"
+        },
+        {
+          "name": "Premium",
+          "price": "12.99"
+        }
+      ],
+      "description": "GitHub is a platform for version control and collaboration, allowing developers to work on projects together from anywhere."
+    },
+    {
+      "id": 15,
+      "name": "Notion",
+      "icon": "notion",
+      "plans": [
+        {
+          "name": "Basic",
+          "price": "4.99"
+        },
+        {
+          "name": "Standard",
+          "price": "8.99"
+        },
+        {
+          "name": "Premium",
+          "price": "12.99"
+        }
+      ],
+      "description": "Notion is a productivity and collaboration tool that combines note-taking, task management, and project planning into one platform."
+    }
+  ]
+} 
