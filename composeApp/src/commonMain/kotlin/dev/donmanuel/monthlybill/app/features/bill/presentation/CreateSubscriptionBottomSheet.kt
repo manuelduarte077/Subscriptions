@@ -3,6 +3,7 @@ package dev.donmanuel.monthlybill.app.features.bill.presentation
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.*
+import androidx.compose.material3.MenuAnchorType.Companion.PrimaryNotEditable
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
@@ -13,6 +14,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.donmanuel.monthlybill.app.features.bill.data.model.Subscription
 import dev.donmanuel.monthlybill.app.features.bill.domain.usecase.InsertSubscriptionUseCase
+import dev.donmanuel.monthlybill.app.features.bill.presentation.composables.SubscriptionDatePickerDialog
 import dev.donmanuel.monthlybill.app.features.categories.presentation.viewmodel.CategoriesViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -27,7 +29,7 @@ import kotlin.time.ExperimentalTime
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalTime::class)
 @Composable
-fun BottomSheetContent(
+fun CreateSubscriptionBottomSheet(
     onClose: () -> Unit
 ) {
     var name by remember { mutableStateOf("") }
@@ -38,7 +40,7 @@ fun BottomSheetContent(
     val coroutineScope = remember { CoroutineScope(Dispatchers.Main) }
 
     // Currency
-    val currencies = listOf("USD", "NIO", "EUR", "MXN", "COP", "ARS", "BRL")
+    val currencies = listOf("USD", "NIO")
     var selectedCurrency by remember { mutableStateOf(currencies.first()) }
     var currencyExpanded by remember { mutableStateOf(false) }
 
@@ -137,7 +139,7 @@ fun BottomSheetContent(
                 readOnly = true,
                 label = { Text("Ciclo de facturación") },
                 trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = billingCycleExpanded) },
-                modifier = Modifier.menuAnchor().fillMaxWidth()
+                modifier = Modifier.menuAnchor(PrimaryNotEditable, true).fillMaxWidth()
             )
             DropdownMenu(
                 expanded = billingCycleExpanded,
@@ -189,7 +191,7 @@ fun BottomSheetContent(
             Text("Fecha de inicio: ${startDate.toString()}")
         }
         if (showStartDatePicker) {
-            DatePickerDialog(
+            SubscriptionDatePickerDialog(
                 initialDate = startDate,
                 onDateSelected = {
                     startDate = it
@@ -204,7 +206,7 @@ fun BottomSheetContent(
             Text("Fecha de fin: ${endDate?.toString() ?: "No definida"}")
         }
         if (showEndDatePicker) {
-            DatePickerDialog(
+            SubscriptionDatePickerDialog(
                 initialDate = endDate ?: startDate,
                 onDateSelected = {
                     endDate = it
@@ -225,9 +227,11 @@ fun BottomSheetContent(
         Spacer(Modifier.height(16.dp))
 
         Row(
-            modifier = Modifier.fillMaxWidth().padding(),
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
-            verticalAlignment = CenterVertically
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(),
+            horizontalArrangement = Arrangement.SpaceEvenly,
+            verticalAlignment = CenterVertically,
         ) {
             OutlinedButton(onClick = onClose, enabled = !isSaving) {
                 Text(
@@ -235,6 +239,7 @@ fun BottomSheetContent(
                     style = TextStyle(fontSize = 18.sp)
                 )
             }
+
             Button(
                 onClick = {
                     if (!isValidDouble(amount)) {
@@ -267,39 +272,4 @@ fun BottomSheetContent(
             }
         }
     }
-}
-
-@Composable
-fun DatePickerDialog(
-    initialDate: LocalDate,
-    onDateSelected: (LocalDate) -> Unit,
-    onDismiss: () -> Unit
-) {
-    var dateText by remember { mutableStateOf(initialDate.toString()) }
-    AlertDialog(
-        onDismissRequest = onDismiss,
-        title = { Text("Selecciona una fecha") },
-        text = {
-            TextField(
-                value = dateText,
-                onValueChange = { dateText = it },
-                label = { Text("YYYY-MM-DD") }
-            )
-        },
-        confirmButton = {
-            Button(onClick = {
-                runCatching { LocalDate.parse(dateText) }.onSuccess {
-                    onDateSelected(it)
-                }
-                onDismiss()
-            }) {
-                Text("Aceptar")
-            }
-        },
-        dismissButton = {
-            OutlinedButton(onClick = onDismiss) {
-                Text("Cancelar")
-            }
-        }
-    )
 }

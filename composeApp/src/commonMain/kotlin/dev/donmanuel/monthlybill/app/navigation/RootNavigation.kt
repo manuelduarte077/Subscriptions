@@ -13,7 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
-import dev.donmanuel.monthlybill.app.features.bill.presentation.BottomSheetContent
+import dev.donmanuel.monthlybill.app.features.bill.presentation.CreateSubscriptionBottomSheet
 import dev.donmanuel.monthlybill.app.navigation.tabs.*
 import kotlinx.coroutines.launch
 import monthlybill.composeapp.generated.resources.Res
@@ -93,7 +93,7 @@ fun RootNavigationGraph(
             },
             sheetState = bottomSheetState,
         ) {
-            BottomSheetContent {
+            CreateSubscriptionBottomSheet {
                 scope.launch { bottomSheetState.hide() }.invokeOnCompletion {
                     if (!bottomSheetState.isVisible) {
                         openBottomSheet = false

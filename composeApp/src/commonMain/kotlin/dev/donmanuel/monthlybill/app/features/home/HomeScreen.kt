@@ -31,6 +31,7 @@ import kotlin.time.ExperimentalTime
 @Composable
 fun HomeScreen(navController: NavController) {
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
+
     var openBottomSheet by rememberSaveable { mutableStateOf(false) }
     var skipPartiallyExpanded by rememberSaveable { mutableStateOf(false) }
     val bottomSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = skipPartiallyExpanded)
