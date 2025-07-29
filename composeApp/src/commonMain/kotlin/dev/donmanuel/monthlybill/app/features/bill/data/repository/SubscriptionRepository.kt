@@ -5,26 +5,26 @@ import dev.donmanuel.monthlybill.app.features.bill.data.model.Subscription
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.withContext
 
 class SubscriptionRepository(
     private val database: RoomDB
 ) {
-    private val dispatcher = Dispatchers.IO
 
     suspend fun insertSubscription(subscription: Subscription) {
-        with(dispatcher) {
+        withContext(Dispatchers.IO) {
             database.subscriptionDao().insertSubscription(subscription)
         }
     }
 
     suspend fun updateSubscription(subscription: Subscription) {
-        with(dispatcher) {
+        withContext(Dispatchers.IO) {
             database.subscriptionDao().updateSubscription(subscription)
         }
     }
 
     suspend fun deleteSubscription(subscription: Subscription) {
-        with(dispatcher) {
+        withContext(Dispatchers.IO) {
             database.subscriptionDao().deleteSubscription(subscription)
         }
     }
@@ -34,7 +34,7 @@ class SubscriptionRepository(
     }
 
     suspend fun getSubscriptionById(id: Long): Subscription? {
-        return with(dispatcher) {
+        return withContext(Dispatchers.IO) {
             database.subscriptionDao().getSubscriptionById(id)
         }
     }

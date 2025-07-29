@@ -14,8 +14,10 @@ import androidx.compose.ui.unit.dp
 import dev.donmanuel.monthlybill.app.features.bill.data.model.Subscription
 import dev.donmanuel.monthlybill.app.theme.parkinsansFont
 import dev.donmanuel.monthlybill.app.theme.redHatBoldFont
+import dev.donmanuel.monthlybill.app.utils.Constants
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.daysUntil
+import kotlinx.datetime.parse
 
 @Composable
 fun SubscriptionItem(
@@ -23,9 +25,17 @@ fun SubscriptionItem(
     today: LocalDate
 ) {
     val (isExpiringSoon, daysToExpire) = remember<Pair<Boolean, Int?>>(subscription.endDate, today) {
-        val endDate = subscription.endDate?.let { runCatching { LocalDate.parse(it) }.getOrNull() }
+        val endDate = subscription.endDate?.let { dateString ->
+            try {
+                LocalDate.parse(dateString)
+            } catch (e: Exception) {
+                // Log error for debugging but don't crash the UI
+                println("Error parsing date: $dateString, error: ${e.message}")
+                null
+            }
+        }
         val days = endDate?.let { today.daysUntil(it) }
-        val highlight = days != null && days in 0..5
+        val highlight = days != null && days in 0..Constants.EXPIRATION_WARNING_DAYS
 
         highlight to days
     }

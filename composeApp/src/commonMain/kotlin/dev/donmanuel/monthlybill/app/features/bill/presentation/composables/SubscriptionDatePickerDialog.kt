@@ -11,6 +11,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import kotlinx.datetime.LocalDate
+import dev.donmanuel.monthlybill.app.utils.Constants
 
 @Composable
 fun SubscriptionDatePickerDialog(
@@ -19,22 +20,35 @@ fun SubscriptionDatePickerDialog(
     onDismiss: () -> Unit
 ) {
     var dateText by remember { mutableStateOf(initialDate.toString()) }
+    var showError by remember { mutableStateOf(false) }
+    
     AlertDialog(
         onDismissRequest = onDismiss,
         title = { Text("Selecciona una fecha") },
         text = {
             TextField(
                 value = dateText,
-                onValueChange = { dateText = it },
-                label = { Text("YYYY-MM-DD") }
+                onValueChange = { 
+                    dateText = it
+                    showError = false
+                },
+                label = { Text(Constants.DATE_FORMAT) },
+                isError = showError,
+                supportingText = if (showError) {
+                    { Text(Constants.ErrorMessages.INVALID_DATE_FORMAT) }
+                } else null
             )
         },
         confirmButton = {
             Button(onClick = {
-                runCatching { LocalDate.parse(dateText) }.onSuccess {
-                    onDateSelected(it)
+                try {
+                    val parsedDate = LocalDate.parse(dateText)
+                    onDateSelected(parsedDate)
+                    onDismiss()
+                } catch (e: Exception) {
+                    showError = true
+                    println("Error parsing date: $dateText, error: ${e.message}")
                 }
-                onDismiss()
             }) {
                 Text("Aceptar")
             }

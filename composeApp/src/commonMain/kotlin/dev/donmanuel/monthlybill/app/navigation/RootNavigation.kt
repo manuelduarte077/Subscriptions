@@ -13,12 +13,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
+import dev.donmanuel.monthlybill.app.features.bill.domain.usecase.InsertSubscriptionUseCase
 import dev.donmanuel.monthlybill.app.features.bill.presentation.CreateSubscriptionBottomSheet
+import dev.donmanuel.monthlybill.app.features.categories.domain.usecases.GetCategoriesUseCase
 import dev.donmanuel.monthlybill.app.navigation.tabs.*
 import kotlinx.coroutines.launch
 import monthlybill.composeapp.generated.resources.Res
 import monthlybill.composeapp.generated.resources.ic_add
 import org.jetbrains.compose.resources.painterResource
+import org.koin.compose.koinInject
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -33,6 +36,10 @@ fun RootNavigationGraph(
         rememberModalBottomSheetState(skipPartiallyExpanded = skipPartiallyExpanded)
 
     var fabVisible by remember { mutableStateOf(true) }
+
+    // Inject dependencies
+    val insertSubscriptionUseCase = koinInject<InsertSubscriptionUseCase>()
+    val getCategoriesUseCase = koinInject<GetCategoriesUseCase>()
 
     Scaffold(
         modifier = modifier,
@@ -93,13 +100,17 @@ fun RootNavigationGraph(
             },
             sheetState = bottomSheetState,
         ) {
-            CreateSubscriptionBottomSheet {
-                scope.launch { bottomSheetState.hide() }.invokeOnCompletion {
-                    if (!bottomSheetState.isVisible) {
-                        openBottomSheet = false
+            CreateSubscriptionBottomSheet(
+                onClose = {
+                    scope.launch { bottomSheetState.hide() }.invokeOnCompletion {
+                        if (!bottomSheetState.isVisible) {
+                            openBottomSheet = false
+                        }
                     }
-                }
-            }
+                },
+                insertSubscriptionUseCase = insertSubscriptionUseCase,
+                getCategoriesUseCase = getCategoriesUseCase
+            )
         }
     }
 }

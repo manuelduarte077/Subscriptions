@@ -1,74 +1,60 @@
 package dev.donmanuel.monthlybill.app.features.bill.presentation
 
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.*
-import androidx.compose.material3.MenuAnchorType.Companion.PrimaryNotEditable
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment.Companion.CenterVertically
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.donmanuel.monthlybill.app.features.bill.data.model.Subscription
 import dev.donmanuel.monthlybill.app.features.bill.domain.usecase.InsertSubscriptionUseCase
-import dev.donmanuel.monthlybill.app.features.bill.presentation.composables.SubscriptionDatePickerDialog
-import dev.donmanuel.monthlybill.app.features.categories.presentation.viewmodel.CategoriesViewModel
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
+import dev.donmanuel.monthlybill.app.features.bill.presentation.composables.SubscriptionDateFields
+import dev.donmanuel.monthlybill.app.features.bill.presentation.composables.SubscriptionFormFields
+import dev.donmanuel.monthlybill.app.features.categories.domain.usecases.GetCategoriesUseCase
+import dev.donmanuel.monthlybill.app.utils.Constants
+import dev.donmanuel.monthlybill.app.utils.ValidationUtils
 import kotlinx.coroutines.launch
-import kotlinx.datetime.LocalDate
+import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
-import org.koin.compose.koinInject
-import org.koin.compose.viewmodel.koinViewModel
 import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
-
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalTime::class)
 @Composable
 fun CreateSubscriptionBottomSheet(
-    onClose: () -> Unit
+    onClose: () -> Unit,
+    insertSubscriptionUseCase: InsertSubscriptionUseCase,
+    getCategoriesUseCase: GetCategoriesUseCase
 ) {
+    val coroutineScope = rememberCoroutineScope()
+    
+    // Form state
     var name by remember { mutableStateOf("") }
     var amount by remember { mutableStateOf("") }
     var isSaving by remember { mutableStateOf(false) }
     var showError by remember { mutableStateOf(false) }
-    val insertSubscriptionUseCase = koinInject<InsertSubscriptionUseCase>()
-    val coroutineScope = remember { CoroutineScope(Dispatchers.Main) }
-
-    // Currency
-    val currencies = listOf("USD", "NIO")
-    var selectedCurrency by remember { mutableStateOf(currencies.first()) }
-    var currencyExpanded by remember { mutableStateOf(false) }
-
-    // Billing Cycle
-    val billingCycles = listOf("monthly", "yearly", "weekly", "daily")
-    var selectedBillingCycle by remember { mutableStateOf(billingCycles.first()) }
-    var billingCycleExpanded by remember { mutableStateOf(false) }
-
-    // Category
-    val categoriesViewModel = koinViewModel<CategoriesViewModel>()
-    val categories by categoriesViewModel.getAllCategories().collectAsStateWithLifecycle(initialValue = emptyList())
-    var selectedCategory by remember { mutableStateOf(categories?.firstOrNull()?.name ?: "General") }
-    var categoryExpanded by remember { mutableStateOf(false) }
-
+    
+    // Dropdown states
+    var selectedCurrency by remember { mutableStateOf(Constants.SUPPORTED_CURRENCIES.first()) }
+    var selectedBillingCycle by remember { mutableStateOf(Constants.BILLING_CYCLES.first()) }
+    var selectedCategory by remember { mutableStateOf(Constants.DEFAULT_CATEGORY) }
+    
+    // Date states
+    val today = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date
+    var startDate by remember { mutableStateOf(today) }
+    var endDate by remember { mutableStateOf<kotlinx.datetime.LocalDate?>(null) }
+    
+    // Categories
+    val categories by getCategoriesUseCase().collectAsStateWithLifecycle(initialValue = emptyList())
+    
     LaunchedEffect(categories) {
-        if (selectedCategory.isBlank() && categories?.isNotEmpty() == true) {
-            selectedCategory = categories?.first()?.name ?: "General"
+        if (categories?.isNotEmpty() == true) {
+            selectedCategory = categories?.first()?.name ?: Constants.DEFAULT_CATEGORY
         }
     }
-
-    // Dates
-    val today = Clock.System.now().toLocalDateTime(kotlinx.datetime.TimeZone.currentSystemDefault()).date
-    var startDate by remember { mutableStateOf(today) }
-    var endDate by remember { mutableStateOf<LocalDate?>(null) }
-    var showStartDatePicker by remember { mutableStateOf(false) }
-    var showEndDatePicker by remember { mutableStateOf(false) }
-
-    fun isValidDouble(value: String): Boolean = value.toDoubleOrNull() != null
 
     Column(
         modifier = Modifier
@@ -81,168 +67,54 @@ fun CreateSubscriptionBottomSheet(
             style = MaterialTheme.typography.titleLarge
         )
 
-        TextField(
-            value = name,
-            onValueChange = { name = it },
-            modifier = Modifier.fillMaxWidth(),
-            label = { Text("Nombre de la suscripción") },
-            singleLine = true
+        // Form Fields
+        SubscriptionFormFields(
+            name = name,
+            onNameChange = { name = it },
+            amount = amount,
+            onAmountChange = { amount = it },
+            selectedCurrency = selectedCurrency,
+            onCurrencyChange = { selectedCurrency = it },
+            currencies = Constants.SUPPORTED_CURRENCIES,
+            selectedBillingCycle = selectedBillingCycle,
+            onBillingCycleChange = { selectedBillingCycle = it },
+            billingCycles = Constants.BILLING_CYCLES,
+            selectedCategory = selectedCategory,
+            onCategoryChange = { selectedCategory = it },
+            categories = categories?.map { it.name },
+            showError = showError
         )
 
-        TextField(
-            value = amount,
-            onValueChange = { amount = it },
-            modifier = Modifier.fillMaxWidth(),
-            label = { Text("Monto") },
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-            singleLine = true,
-            prefix = { Text("$ ") }
+        // Date Fields
+        SubscriptionDateFields(
+            startDate = startDate,
+            onStartDateChange = { startDate = it },
+            endDate = endDate,
+            onEndDateChange = { endDate = it }
         )
-
-        // Currency Dropdown
-        ExposedDropdownMenuBox(
-            expanded = currencyExpanded,
-            onExpandedChange = { currencyExpanded = !currencyExpanded }
-        ) {
-            OutlinedTextField(
-                value = selectedCurrency,
-                onValueChange = {},
-                readOnly = true,
-                label = { Text("Moneda") },
-                trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = currencyExpanded) },
-                modifier = Modifier.menuAnchor().fillMaxWidth()
-            )
-            DropdownMenu(
-                expanded = currencyExpanded,
-                onDismissRequest = { currencyExpanded = false }
-            ) {
-                currencies.forEach { currency ->
-                    DropdownMenuItem(
-                        text = { Text(currency) },
-                        onClick = {
-                            selectedCurrency = currency
-                            currencyExpanded = false
-                        }
-                    )
-                }
-            }
-        }
-
-        // Billing Cycle Dropdown
-        ExposedDropdownMenuBox(
-            expanded = billingCycleExpanded,
-            onExpandedChange = { billingCycleExpanded = !billingCycleExpanded }
-        ) {
-            OutlinedTextField(
-                value = selectedBillingCycle,
-                onValueChange = {},
-                readOnly = true,
-                label = { Text("Ciclo de facturación") },
-                trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = billingCycleExpanded) },
-                modifier = Modifier.menuAnchor(PrimaryNotEditable, true).fillMaxWidth()
-            )
-            DropdownMenu(
-                expanded = billingCycleExpanded,
-                onDismissRequest = { billingCycleExpanded = false }
-            ) {
-                billingCycles.forEach { cycle ->
-                    DropdownMenuItem(
-                        text = { Text(cycle) },
-                        onClick = {
-                            selectedBillingCycle = cycle
-                            billingCycleExpanded = false
-                        }
-                    )
-                }
-            }
-        }
-
-        // Category Dropdown
-        ExposedDropdownMenuBox(
-            expanded = categoryExpanded,
-            onExpandedChange = { categoryExpanded = !categoryExpanded }
-        ) {
-            OutlinedTextField(
-                value = selectedCategory,
-                onValueChange = {},
-                readOnly = true,
-                label = { Text("Categoría") },
-                trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = categoryExpanded) },
-                modifier = Modifier.menuAnchor().fillMaxWidth()
-            )
-            DropdownMenu(
-                expanded = categoryExpanded,
-                onDismissRequest = { categoryExpanded = false }
-            ) {
-                categories?.forEach { category ->
-                    DropdownMenuItem(
-                        text = { Text(category.name) },
-                        onClick = {
-                            selectedCategory = category.name
-                            categoryExpanded = false
-                        }
-                    )
-                }
-            }
-        }
-
-        // Start Date Picker
-        OutlinedButton(onClick = { showStartDatePicker = true }) {
-            Text("Fecha de inicio: ${startDate.toString()}")
-        }
-        if (showStartDatePicker) {
-            SubscriptionDatePickerDialog(
-                initialDate = startDate,
-                onDateSelected = {
-                    startDate = it
-                    showStartDatePicker = false
-                },
-                onDismiss = { showStartDatePicker = false }
-            )
-        }
-
-        // End Date Picker
-        OutlinedButton(onClick = { showEndDatePicker = true }) {
-            Text("Fecha de fin: ${endDate?.toString() ?: "No definida"}")
-        }
-        if (showEndDatePicker) {
-            SubscriptionDatePickerDialog(
-                initialDate = endDate ?: startDate,
-                onDateSelected = {
-                    endDate = it
-                    showEndDatePicker = false
-                },
-                onDismiss = { showEndDatePicker = false }
-            )
-        }
-
-        if (showError) {
-            Text(
-                text = "Por favor ingresa un monto válido.",
-                color = MaterialTheme.colorScheme.error,
-                style = TextStyle(fontSize = 14.sp)
-            )
-        }
 
         Spacer(Modifier.height(16.dp))
 
+        // Action Buttons
         Row(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(),
             horizontalArrangement = Arrangement.SpaceEvenly,
-            verticalAlignment = CenterVertically,
+            verticalAlignment = Alignment.CenterVertically,
         ) {
             OutlinedButton(onClick = onClose, enabled = !isSaving) {
                 Text(
-                    "Cancelar", modifier = Modifier.padding(horizontal = 8.dp),
+                    "Cancelar", 
+                    modifier = Modifier.padding(horizontal = 8.dp),
                     style = TextStyle(fontSize = 18.sp)
                 )
             }
 
             Button(
                 onClick = {
-                    if (!isValidDouble(amount)) {
+                    val priceValue = ValidationUtils.parsePrice(amount)
+                    if (priceValue == null || !ValidationUtils.isValidPrice(amount)) {
                         showError = true
                         return@Button
                     }
@@ -251,7 +123,7 @@ fun CreateSubscriptionBottomSheet(
                     coroutineScope.launch {
                         val subscription = Subscription(
                             name = name,
-                            price = amount.toDouble(),
+                            price = priceValue,
                             currency = selectedCurrency,
                             billingCycle = selectedBillingCycle,
                             category = selectedCategory,
@@ -263,10 +135,11 @@ fun CreateSubscriptionBottomSheet(
                         onClose()
                     }
                 },
-                enabled = name.isNotBlank() && amount.isNotBlank() && !isSaving
+                enabled = ValidationUtils.isValidName(name) && amount.isNotBlank() && !isSaving
             ) {
                 Text(
-                    if (isSaving) "Guardando..." else "Registrar", modifier = Modifier.padding(horizontal = 8.dp),
+                    if (isSaving) "Guardando..." else "Registrar", 
+                    modifier = Modifier.padding(horizontal = 8.dp),
                     style = TextStyle(fontSize = 18.sp)
                 )
             }
