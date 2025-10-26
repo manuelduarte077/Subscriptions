@@ -35,9 +35,8 @@ fun CategoryScreen(
     var selectedCategory by remember { mutableStateOf<Category?>(null) }
 
     Scaffold(
-        modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
-            MediumTopAppBar(
+            TopAppBar(
                 title = {
                     Text(
                         text = "Categories",
@@ -45,7 +44,6 @@ fun CategoryScreen(
                         fontSize = FontSize.EXTRA_MEDIUM,
                     )
                 },
-                scrollBehavior = scrollBehavior,
                 windowInsets = TopAppBarDefaults.windowInsets,
             )
         },
