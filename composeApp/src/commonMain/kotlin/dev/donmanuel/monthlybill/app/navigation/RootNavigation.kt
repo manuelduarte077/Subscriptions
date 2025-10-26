@@ -30,10 +30,9 @@ fun RootNavigationGraph(
     modifier: Modifier = Modifier,
 ) {
     var openBottomSheet by rememberSaveable { mutableStateOf(false) }
-    var skipPartiallyExpanded by rememberSaveable { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
     val bottomSheetState =
-        rememberModalBottomSheetState(skipPartiallyExpanded = skipPartiallyExpanded)
+        rememberModalBottomSheetState(skipPartiallyExpanded = true)
 
     var fabVisible by remember { mutableStateOf(true) }
 
