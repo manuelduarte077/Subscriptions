@@ -25,6 +25,7 @@ import kotlin.time.ExperimentalTime
 fun CalendarScreen(
     navController: NavController
 ) {
+    val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState())
 
     val getAllSubscriptionsUseCase = koinInject<GetAllSubscriptionsUseCase>()
     val subscriptions by getAllSubscriptionsUseCase().collectAsStateWithLifecycle(initialValue = emptyList())
@@ -62,6 +63,7 @@ fun CalendarScreen(
     }
 
     Scaffold(
+        modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
             TopAppBar(
                 title = {
@@ -72,6 +74,7 @@ fun CalendarScreen(
                         color = MaterialTheme.colorScheme.primary
                     )
                 },
+                scrollBehavior = scrollBehavior,
             )
         }
     ) { innerPadding ->
