@@ -1,13 +1,12 @@
 package dev.donmanuel.monthlybill.app.features.bill.presentation
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.donmanuel.monthlybill.app.features.bill.data.model.Subscription
 import dev.donmanuel.monthlybill.app.features.bill.domain.usecase.InsertSubscriptionUseCase
@@ -59,12 +58,13 @@ fun CreateSubscriptionBottomSheet(
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(16.dp),
-        verticalArrangement = Arrangement.spacedBy(16.dp)
+            .padding(horizontal = 24.dp, vertical = 8.dp),
+        verticalArrangement = Arrangement.spacedBy(20.dp)
     ) {
         Text(
             text = "Nueva Suscripción",
-            style = MaterialTheme.typography.titleLarge
+            style = MaterialTheme.typography.headlineMedium,
+            fontWeight = androidx.compose.ui.text.font.FontWeight.Bold
         )
 
         // Form Fields
@@ -93,22 +93,22 @@ fun CreateSubscriptionBottomSheet(
             onEndDateChange = { endDate = it }
         )
 
-        Spacer(Modifier.height(16.dp))
+        Spacer(Modifier.height(8.dp))
 
         // Action Buttons
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(),
-            horizontalArrangement = Arrangement.SpaceEvenly,
+                .padding(vertical = 16.dp),
+            horizontalArrangement = Arrangement.spacedBy(12.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            OutlinedButton(onClick = onClose, enabled = !isSaving) {
-                Text(
-                    "Cancelar", 
-                    modifier = Modifier.padding(horizontal = 8.dp),
-                    style = TextStyle(fontSize = 18.sp)
-                )
+            OutlinedButton(
+                onClick = onClose, 
+                enabled = !isSaving,
+                modifier = Modifier.weight(1f)
+            ) {
+                Text("Cancelar")
             }
 
             Button(
@@ -135,13 +135,17 @@ fun CreateSubscriptionBottomSheet(
                         onClose()
                     }
                 },
-                enabled = ValidationUtils.isValidName(name) && amount.isNotBlank() && !isSaving
+                enabled = ValidationUtils.isValidName(name) && amount.isNotBlank() && !isSaving,
+                modifier = Modifier.weight(1f)
             ) {
-                Text(
-                    if (isSaving) "Guardando..." else "Registrar", 
-                    modifier = Modifier.padding(horizontal = 8.dp),
-                    style = TextStyle(fontSize = 18.sp)
-                )
+                if (isSaving) {
+                    CircularProgressIndicator(
+                        modifier = Modifier.size(16.dp),
+                        strokeWidth = 2.dp
+                    )
+                } else {
+                    Text("Registrar")
+                }
             }
         }
     }
