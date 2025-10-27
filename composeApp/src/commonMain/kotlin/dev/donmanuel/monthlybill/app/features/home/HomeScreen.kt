@@ -13,7 +13,6 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import dev.donmanuel.monthlybill.app.features.bill.domain.usecase.GetAllSubscriptionsUseCase
 import dev.donmanuel.monthlybill.app.features.home.components.SubscriptionItem
-import dev.donmanuel.monthlybill.app.theme.FontSize
 import dev.donmanuel.monthlybill.app.theme.redHatBoldFont
 import kotlinx.datetime.toLocalDateTime
 import org.koin.compose.koinInject
@@ -37,20 +36,17 @@ fun HomeScreen(navController: NavController) {
                 title = {
                     Text(
                         text = "Monthly Bill",
-                        fontSize = FontSize.LARGE,
-                        fontFamily = redHatBoldFont(),
-                        color = MaterialTheme.colorScheme.primary,
+                        style = MaterialTheme.typography.titleLarge,
+                        fontFamily = redHatBoldFont()
                     )
                 },
                 scrollBehavior = scrollBehavior,
             )
         },
-    ) { innerPadding ->
+    ) { paddingValues ->
         LazyColumn(
-            modifier = Modifier
-                .padding(innerPadding)
-                .padding(horizontal = 10.dp),
-            contentPadding = PaddingValues(vertical = 8.dp),
+            modifier = Modifier.padding(paddingValues),
+            contentPadding = PaddingValues(16.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             items(subscriptions.orEmpty()) { subscription ->

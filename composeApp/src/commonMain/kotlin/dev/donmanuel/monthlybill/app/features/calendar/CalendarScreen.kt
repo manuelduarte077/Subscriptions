@@ -13,7 +13,6 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import dev.donmanuel.monthlybill.app.features.bill.domain.usecase.GetAllSubscriptionsUseCase
 import dev.donmanuel.monthlybill.app.features.calendar.components.*
-import dev.donmanuel.monthlybill.app.theme.FontSize
 import dev.donmanuel.monthlybill.app.theme.redHatBoldFont
 import kotlinx.datetime.*
 import org.koin.compose.koinInject
@@ -69,21 +68,19 @@ fun CalendarScreen(
                 title = {
                     Text(
                         text = "Calendar",
-                        fontSize = FontSize.LARGE,
-                        fontFamily = redHatBoldFont(),
-                        color = MaterialTheme.colorScheme.primary
+                        style = MaterialTheme.typography.titleLarge,
+                        fontFamily = redHatBoldFont()
                     )
                 },
                 scrollBehavior = scrollBehavior,
             )
         }
-    ) { innerPadding ->
+    ) { paddingValues ->
         Column(
             modifier = Modifier
-                .padding(innerPadding)
+                .padding(paddingValues)
                 .fillMaxSize()
         ) {
-            // Month selector
             MonthSelector(
                 selectedDate = selectedDate,
                 onMonthChange = { selectedDate = it },
@@ -92,7 +89,6 @@ fun CalendarScreen(
 
             HorizontalDivider()
 
-            // Calendar grid
             LazyColumn(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -111,7 +107,6 @@ fun CalendarScreen(
                     Spacer(modifier = Modifier.height(16.dp))
                 }
 
-                // Subscriptions list for selected month
                 item {
                     Text(
                         text = "Subscriptions this month",

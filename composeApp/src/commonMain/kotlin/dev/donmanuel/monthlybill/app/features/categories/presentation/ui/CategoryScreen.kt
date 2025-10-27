@@ -16,7 +16,6 @@ import dev.donmanuel.monthlybill.app.features.categories.domain.entities.Categor
 import dev.donmanuel.monthlybill.app.features.categories.presentation.ui.composables.CategoryBottomSheetContent
 import dev.donmanuel.monthlybill.app.features.categories.presentation.ui.composables.CategoryItem
 import dev.donmanuel.monthlybill.app.features.categories.presentation.viewmodel.CategoriesViewModel
-import dev.donmanuel.monthlybill.app.theme.FontSize
 import dev.donmanuel.monthlybill.app.theme.redHatBoldFont
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -26,7 +25,7 @@ fun CategoryScreen(
     modifier: Modifier = Modifier,
 ) {
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState())
-    
+
     val viewModel = koinViewModel<CategoriesViewModel>()
     val categories by viewModel.getAllCategories().collectAsStateWithLifecycle(initialValue = emptyList())
 
@@ -42,16 +41,16 @@ fun CategoryScreen(
                 title = {
                     Text(
                         text = "Categories",
+                        style = MaterialTheme.typography.titleLarge,
                         fontFamily = redHatBoldFont(),
-                        fontSize = FontSize.EXTRA_MEDIUM,
                     )
                 },
                 scrollBehavior = scrollBehavior,
             )
         },
-    ) { innerPadding ->
+    ) { paddingValues ->
         LazyVerticalGrid(
-            modifier = Modifier.padding(innerPadding),
+            modifier = Modifier.padding(paddingValues),
             columns = GridCells.Fixed(2),
             horizontalArrangement = Arrangement.spacedBy(8.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp),
