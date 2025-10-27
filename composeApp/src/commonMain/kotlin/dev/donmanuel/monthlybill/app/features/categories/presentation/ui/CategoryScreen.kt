@@ -24,7 +24,7 @@ import org.koin.compose.viewmodel.koinViewModel
 fun CategoryScreen(
     modifier: Modifier = Modifier,
 ) {
-    val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState())
+    val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
 
     val viewModel = koinViewModel<CategoriesViewModel>()
     val categories by viewModel.getAllCategories().collectAsStateWithLifecycle(initialValue = emptyList())
@@ -41,7 +41,7 @@ fun CategoryScreen(
                 title = {
                     Text(
                         text = "Categories",
-                        style = MaterialTheme.typography.titleLarge,
+                        style = MaterialTheme.typography.titleMedium,
                         fontFamily = redHatBoldFont(),
                     )
                 },
@@ -50,7 +50,7 @@ fun CategoryScreen(
         },
     ) { paddingValues ->
         LazyVerticalGrid(
-            modifier = Modifier.padding(paddingValues),
+            modifier = Modifier.padding(top = paddingValues.calculateTopPadding()),
             columns = GridCells.Fixed(2),
             horizontalArrangement = Arrangement.spacedBy(8.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp),

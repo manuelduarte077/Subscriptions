@@ -22,7 +22,7 @@ import kotlin.time.ExperimentalTime
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalTime::class)
 @Composable
 fun HomeScreen(navController: NavController) {
-    val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState())
+    val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
 
     val getAllSubscriptionsUseCase = koinInject<GetAllSubscriptionsUseCase>()
     val subscriptions by getAllSubscriptionsUseCase().collectAsStateWithLifecycle(initialValue = emptyList())
@@ -36,7 +36,7 @@ fun HomeScreen(navController: NavController) {
                 title = {
                     Text(
                         text = "Monthly Bill",
-                        style = MaterialTheme.typography.titleLarge,
+                        style = MaterialTheme.typography.titleMedium,
                         fontFamily = redHatBoldFont()
                     )
                 },
@@ -45,8 +45,9 @@ fun HomeScreen(navController: NavController) {
         },
     ) { paddingValues ->
         LazyColumn(
-            modifier = Modifier.padding(paddingValues),
-            contentPadding = PaddingValues(16.dp),
+            modifier = Modifier
+                .padding(top = paddingValues.calculateTopPadding())
+                .padding(horizontal = 16.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             items(subscriptions.orEmpty()) { subscription ->
