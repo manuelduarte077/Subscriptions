@@ -24,7 +24,7 @@ import kotlin.time.ExperimentalTime
 fun CalendarScreen(
     navController: NavController
 ) {
-    val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
+    val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState())
 
     val getAllSubscriptionsUseCase = koinInject<GetAllSubscriptionsUseCase>()
     val subscriptions by getAllSubscriptionsUseCase().collectAsStateWithLifecycle(initialValue = emptyList())
@@ -68,7 +68,7 @@ fun CalendarScreen(
                 title = {
                     Text(
                         text = "Calendar",
-                        style = MaterialTheme.typography.titleMedium,
+                        style = MaterialTheme.typography.titleLarge,
                         fontFamily = redHatBoldFont()
                     )
                 },

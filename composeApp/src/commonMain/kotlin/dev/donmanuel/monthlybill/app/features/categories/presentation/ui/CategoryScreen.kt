@@ -24,7 +24,7 @@ import org.koin.compose.viewmodel.koinViewModel
 fun CategoryScreen(
     modifier: Modifier = Modifier,
 ) {
-    val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
+    val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState())
 
     val viewModel = koinViewModel<CategoriesViewModel>()
     val categories by viewModel.getAllCategories().collectAsStateWithLifecycle(initialValue = emptyList())
@@ -41,7 +41,7 @@ fun CategoryScreen(
                 title = {
                     Text(
                         text = "Categories",
-                        style = MaterialTheme.typography.titleMedium,
+                        style = MaterialTheme.typography.titleLarge,
                         fontFamily = redHatBoldFont(),
                     )
                 },
