@@ -1,20 +1,8 @@
-## Control de suscripciones
+# Monthly Bill 📱
 
-Aplicacion usando compose multiplaform, para registrar las subscripciones que tengo activas, y que me ayuden a recordar cuantas dias me faltan para que expire la suscripcion, controlando los costos de las suscripciones, mostrar los costos totales de las suscripciones. Para que pueda controlar mis gastos mensuales.
+Monthly Bill es una aplicación multiplataforma (Android, iOS, Desktop) desarrollada con Kotlin Multiplatform y Jetpack Compose para gestionar y controlar tus suscripciones activas.
 
-# Features
+## 📸 Screenshots
 
-- Registro de suscripciones
-- Recordatorio de expiracion de suscripciones
-- Control de costos de suscripciones
-- Mostrar costos totales de suscripciones
-- Mostrar graficos de costos de suscripciones
-- Exportar datos de suscripciones
-
-
-Te gustaría que agregue alguna de estas mejoras?
-Acciones rápidas: Botones para editar o eliminar cada suscripción.
-Visualización: Mostrar íconos de categoría, colores o resaltar suscripciones próximas a vencer.
-Resumen: Mostrar el total mensual/gasto al inicio de la pantalla.
-Filtrado/búsqueda: Permitir buscar o filtrar por categoría, estado, etc.
-Animaciones o feedback visual: Al agregar/eliminar.
+| ![Home Screen](docs/home.png) | ![Calendar Screen](docs/image.png) | ![Categories Screen](docs/categories.png) | 
+|:---:|:---:|:---:|
